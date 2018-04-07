@@ -77,10 +77,54 @@ void draw()
     //my draw code
     textAlign(CENTER);
     text("" + currentLetter, 200+sizeOfInputArea/2, 200+sizeOfInputArea/3); //draw current letter
+    stroke(204, 102, 0);
+    rect(200, 200+1.5*sizeOfInputArea/3, sizeOfInputArea/3, sizeOfInputArea/6);
+    fill(0);
+    text("abc", 200+sizeOfInputArea/6, 200+1.5*sizeOfInputArea/3 + sizeOfInputArea/9); //draw current letter
+    fill(255);
+    rect(200, 200+2*sizeOfInputArea/3, sizeOfInputArea/3, sizeOfInputArea/6);
+    fill(0);
+    text("jkl", 200+sizeOfInputArea/6, 200+2*sizeOfInputArea/3 + sizeOfInputArea/9); //draw current letter
+    fill(255);
+    rect(200, 200+2.5*sizeOfInputArea/3, sizeOfInputArea/3, sizeOfInputArea/6);
+    fill(0);
+    text("tuv", 200+sizeOfInputArea/6, 200+2.5*sizeOfInputArea/3 + sizeOfInputArea/9); //draw current letter
+    fill(255);
+    
+    rect(200+sizeOfInputArea/3, 200+1.5*sizeOfInputArea/3, sizeOfInputArea/3, sizeOfInputArea/6);
+    fill(0);
+    text("def", 200+3*sizeOfInputArea/6, 200+1.5*sizeOfInputArea/3 + sizeOfInputArea/9); //draw current letter
+    fill(255);
+    rect(200+sizeOfInputArea/3, 200+2*sizeOfInputArea/3, sizeOfInputArea/3, sizeOfInputArea/6);
+    fill(0);
+    text("mno", 200+3*sizeOfInputArea/6, 200+2*sizeOfInputArea/3 + sizeOfInputArea/9); //draw current letter
+    fill(255);
+    rect(200+sizeOfInputArea/3, 200+2.5*sizeOfInputArea/3, sizeOfInputArea/3, sizeOfInputArea/6);
+    fill(0);
+    text("wxyz", 200+3*sizeOfInputArea/6, 200+2.5*sizeOfInputArea/3 + sizeOfInputArea/9); //draw current letter
+    fill(255);
+    
+    rect(200+2*sizeOfInputArea/3, 200+1.5*sizeOfInputArea/3, sizeOfInputArea/3, sizeOfInputArea/6);
+    fill(0);
+    text("ghi", 200+5*sizeOfInputArea/6, 200+1.5*sizeOfInputArea/3 + sizeOfInputArea/9); //draw current letter
+    fill(255);
+    rect(200+2*sizeOfInputArea/3, 200+2*sizeOfInputArea/3, sizeOfInputArea/3, sizeOfInputArea/6);
+    fill(0);
+    text("pqrs", 200+5*sizeOfInputArea/6, 200+2*sizeOfInputArea/3 + sizeOfInputArea/9); //draw current letter
+    fill(255);
+    rect(200+2*sizeOfInputArea/3, 200+2.5*sizeOfInputArea/3, sizeOfInputArea/3, sizeOfInputArea/6);
+    fill(0);
+    text("'", 200+5*sizeOfInputArea/6, 200+2.5*sizeOfInputArea/3 + sizeOfInputArea/9); //draw current letter
+    fill(255);
+    rect(200, 200+sizeOfInputArea/3, sizeOfInputArea/2, sizeOfInputArea/6);
+    fill(0);
+    text("␣", 200 + sizeOfInputArea/4, 200+sizeOfInputArea/3 + sizeOfInputArea/9);
     fill(255, 0, 0);
-    rect(200, 200+sizeOfInputArea/2, sizeOfInputArea/2, sizeOfInputArea/2); //draw left red button
-    fill(0, 255, 0);
-    rect(200+sizeOfInputArea/2, 200+sizeOfInputArea/2, sizeOfInputArea/2, sizeOfInputArea/2); //draw right green button
+    rect(200+sizeOfInputArea/2, 200+sizeOfInputArea/3, sizeOfInputArea/2, sizeOfInputArea/6);
+    //fill(255, 0, 0);
+    //rect(200, 200+sizeOfInputArea/2, sizeOfInputArea/2, sizeOfInputArea/2); //draw left red button
+    //fill(0, 255, 0);
+    //rect(200+sizeOfInputArea/2, 200+sizeOfInputArea/2, sizeOfInputArea/2, sizeOfInputArea/2); //draw right green button
   }
 }
 
