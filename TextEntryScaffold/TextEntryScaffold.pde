@@ -1,5 +1,6 @@
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 String[] phrases; //contains all of the phrases
 int totalTrialNum = 4; //the total number of phrases to be tested - set this low for testing. Might be ~10 for the real bakeoff!
@@ -18,6 +19,12 @@ final float sizeOfInputArea = DPIofYourDeviceScreen*1; //aka, 1.0 inches square!
 
 //Variables for my silly implementation. You can delete this:
 char currentLetter = 'a';
+boolean keyboardreset = false;
+
+int [] keyboard = {0,0,0,0,0,0,0,0,0,0,0,0};
+
+
+
 
 //You can modify anything in here. This is just a basic implementation.
 void setup()
@@ -76,7 +83,7 @@ void draw()
 
     //my draw code
     textAlign(CENTER);
-    text("" + currentLetter, 200+sizeOfInputArea/2, 200+sizeOfInputArea/3); //draw current letter
+   
     stroke(204, 102, 0);
     rect(200, 200+1.5*sizeOfInputArea/3, sizeOfInputArea/3, sizeOfInputArea/6);
     fill(0);
@@ -124,6 +131,7 @@ void draw()
     fill(0);
     text("Back", 200 + 3*sizeOfInputArea/4, 200+sizeOfInputArea/3 + sizeOfInputArea/9);
     fill(255);
+    text("" + currentLetter, 200+sizeOfInputArea/2, 200+sizeOfInputArea/3 - 50); //draw current letter
     //fill(255, 0, 0);
     //rect(200, 200+sizeOfInputArea/2, sizeOfInputArea/2, sizeOfInputArea/2); //draw left red button
     //fill(0, 255, 0);
@@ -137,37 +145,186 @@ boolean didMouseClick(float x, float y, float w, float h) //simple function to d
 }
 
 
+void refresharray(int t)
+{
+  for (int i = 0; i < (keyboard).length;i++)
+  {
+    if (i != t && i != 0)
+    {
+        keyboard[i] = 0;
+    }
+  }
+}
+
+
 void mousePressed()
 {
-
-  if (didMouseClick(200, 200+sizeOfInputArea/2, sizeOfInputArea/2, sizeOfInputArea/2)) //check if click in left button
+  if (startTime !=0)
   {
-    currentLetter --;
-    if (currentLetter<'_') //wrap around to z
-      currentLetter = 'z';
-  }
-
-  if (didMouseClick(200+sizeOfInputArea/2, 200+sizeOfInputArea/2, sizeOfInputArea/2, sizeOfInputArea/2)) //check if click in right button
-  {
-    currentLetter ++;
-    if (currentLetter>'z') //wrap back to space (aka underscore)
-      currentLetter = '_';
-  }
-
-  if (didMouseClick(200, 200, sizeOfInputArea, sizeOfInputArea/2)) //check if click occured in letter area
-  {
-    if (currentLetter=='_') //if underscore, consider that a space bar
-      currentTyped+=" ";
-    else if (currentLetter=='`' & currentTyped.length()>0) //if `, treat that as a delete command
-      currentTyped = currentTyped.substring(0, currentTyped.length()-1);
-    else if (currentLetter!='`') //if not any of the above cases, add the current letter to the typed string
+      // jkl 
+    if (didMouseClick(200, 200+2*sizeOfInputArea/3, sizeOfInputArea/3, sizeOfInputArea/6))
+    {
+      refresharray(3);
+      if (keyboard[3] == 0) {
+        currentLetter = 'j';
+      }
+      else if (keyboard[3]% 3 == 0)
+      {
+        currentTyped = currentTyped.substring(0, currentTyped.length()-1);
+        currentLetter = 'j';
+      }
+      else if (keyboard[3]%3 == 1){
+        currentTyped = currentTyped.substring(0, currentTyped.length()-1);
+        currentLetter = 'k';
+      }
+      else if (keyboard[3]%3 == 2){
+        currentTyped = currentTyped.substring(0, currentTyped.length()-1);
+        currentLetter = 'l';
+      }
+      keyboard[3]++;
       currentTyped+=currentLetter;
-  }
-
-  //You are allowed to have a next button outside the 2" area
-  if (didMouseClick(800, 00, 200, 200)) //check if click is in next button
-  {
-    nextTrial(); //if so, advance to next trial
+    }
+    // abc 
+    if (didMouseClick(200, 200+1.5*sizeOfInputArea/3, sizeOfInputArea/3, sizeOfInputArea/6))
+    {
+      refresharray(0);
+      if (keyboard[0] == 0) {
+        currentLetter = 'a';
+      }
+      else if (keyboard[0]%3 == 0){
+        currentTyped = currentTyped.substring(0, currentTyped.length()-1);
+        currentLetter = 'a';
+      }
+      else if (keyboard[0]%3 == 1){
+        currentTyped = currentTyped.substring(0, currentTyped.length()-1);
+        currentLetter = 'b';
+      }
+      else if (keyboard[0]%3 == 2){
+        currentTyped = currentTyped.substring(0, currentTyped.length()-1);
+        currentLetter = 'c';
+      }
+      keyboard[0]++;
+      currentTyped+=currentLetter;
+    }
+    
+    // tuv
+    else if (didMouseClick(200, 200+2.5*sizeOfInputArea/3, sizeOfInputArea/3, sizeOfInputArea/6))
+    {
+      refresharray(6);
+      if (keyboard[6] == 0){currentLetter='t';}
+      else // if (keyboard[6] % 3 ==0 || keyboard[6] % 3 ==1 || keyboard[6] % 3 == 2)
+      {
+        currentTyped = currentTyped.substring(0, currentTyped.length()-1);
+        if (keyboard[6]%3 == 0) {currentLetter = 't';}
+        else if (keyboard[6]%3 == 1){currentLetter = 'u';}
+        else if (keyboard[6]%3 == 2){currentLetter = 'v';}
+      }
+       keyboard[6]++;
+       currentTyped+=currentLetter;
+    }
+    // def 
+    else if (didMouseClick(200+sizeOfInputArea/3, 200+1.5*sizeOfInputArea/3, sizeOfInputArea/3, sizeOfInputArea/6))
+    {
+      refresharray(1);
+      if (keyboard[1] == 0){currentLetter='d';}
+      else 
+      {
+        currentTyped = currentTyped.substring(0, currentTyped.length()-1);
+        if (keyboard[1]%3 == 0) {currentLetter = 'd';}
+        else if (keyboard[1]%3 == 1){currentLetter = 'e';}
+        else if (keyboard[1]%3 == 2){currentLetter = 'f';}
+      }
+       keyboard[1]++;
+       currentTyped+=currentLetter;
+    }
+    // mno 
+    else if (didMouseClick(200+sizeOfInputArea/3, 200+2*sizeOfInputArea/3, sizeOfInputArea/3, sizeOfInputArea/6))
+    {
+      refresharray(4);
+      if (keyboard[4] == 0){currentLetter='m';}
+      else 
+      {
+        currentTyped = currentTyped.substring(0, currentTyped.length()-1);
+        if (keyboard[4]%3 == 0) {currentLetter = 'm';}
+        else if (keyboard[4]%3 == 1){currentLetter = 'n';}
+        else if (keyboard[4]%3 == 2){currentLetter = 'o';}
+      }
+       keyboard[4]++;
+       currentTyped+=currentLetter;
+    }
+    // wxyz
+    else if (didMouseClick(200+sizeOfInputArea/3, 200+2.5*sizeOfInputArea/3, sizeOfInputArea/3, sizeOfInputArea/6))
+    {
+      refresharray(7);
+      if (keyboard[7] == 0) {currentLetter = 'w';}
+      else
+      {
+        
+        currentTyped = currentTyped.substring(0, currentTyped.length()-1);
+        if (keyboard[7] % 4 == 0){currentLetter = 'w';}
+        else if (keyboard[7] % 4 == 1){currentLetter = 'x';}
+        else if (keyboard[7] % 4 == 2){currentLetter = 'y';}
+        else if (keyboard[7] % 4 == 3){currentLetter = 'z';}
+      }
+      keyboard[7]++;
+      currentTyped+=currentLetter;
+    }
+    // ghi
+    else if (didMouseClick(200+2*sizeOfInputArea/3, 200+1.5*sizeOfInputArea/3, sizeOfInputArea/3, sizeOfInputArea/6))
+    {
+      refresharray(2);
+      if (keyboard[2] == 0) {currentLetter = 'g';}
+      else
+      {
+        currentTyped = currentTyped.substring(0, currentTyped.length()-1);
+        if (keyboard[2] % 3 == 0){currentLetter = 'g';}
+        else if (keyboard[2] % 3 == 1){currentLetter = 'h';}
+        else if (keyboard[2] % 3 == 2){currentLetter = 'i';}
+      }
+      keyboard[2]++;
+      currentTyped+=currentLetter;
+    }
+  // pqrs
+    else if (didMouseClick(200+2*sizeOfInputArea/3, 200+2*sizeOfInputArea/3, sizeOfInputArea/3, sizeOfInputArea/6))
+    {
+      refresharray(5);
+      if (keyboard[5] == 0) {
+        currentLetter = 'p';
+      }
+      else
+      {
+        currentTyped = currentTyped.substring(0, currentTyped.length()-1);
+        if (keyboard[5] % 4 == 0){currentLetter = 'p';}
+        else if (keyboard[5] % 4 == 1){currentLetter = 'q';}
+        else if (keyboard[5] % 4 == 2){currentLetter = 'r';}
+        else if (keyboard[5] % 4 == 3){currentLetter = 's';}
+      }
+      keyboard[5]++;
+      currentTyped+=currentLetter;
+    }
+    
+    else if (didMouseClick(200+2*sizeOfInputArea/3, 200+2.5*sizeOfInputArea/3, sizeOfInputArea/3, sizeOfInputArea/6))
+    {
+        refresharray(-1);
+        currentLetter = '\'';
+        currentTyped+=currentLetter;
+    }
+    else if (didMouseClick(200, 200+sizeOfInputArea/3, sizeOfInputArea/2, sizeOfInputArea/6))
+    {
+      refresharray(-1);
+      currentLetter = ' ';
+      currentTyped+=currentLetter;
+    }
+    // Back
+    else if (didMouseClick(200+sizeOfInputArea/2, 200+sizeOfInputArea/3, sizeOfInputArea/2, sizeOfInputArea/6)
+               && currentTyped.length()>0) //if `, treat that as a delete command
+        currentTyped = currentTyped.substring(0, currentTyped.length()-1);
+    //You are allowed to have a next button outside the 2" area
+    else if (didMouseClick(800, 00, 200, 200)) //check if click is in next button
+    {
+      nextTrial(); //if so, advance to next trial
+    }
+    
   }
 }
 
@@ -229,14 +386,12 @@ void nextTrial()
   {
     currTrialNum++; //increment trial number
   }
-
+  refresharray(-1);
   lastTime = millis(); //record the time of when this trial ended
   currentTyped = ""; //clear what is currently typed preparing for next trial
   currentPhrase = phrases[currTrialNum]; // load the next phrase!
   //currentPhrase = "abc"; // uncomment this to override the test phrase (useful for debugging)
 }
-
-
 
 //=========SHOULD NOT NEED TO TOUCH THIS METHOD AT ALL!==============
 int computeLevenshteinDistance(String phrase1, String phrase2) //this computers error between two strings
