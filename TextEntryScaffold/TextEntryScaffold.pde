@@ -22,7 +22,7 @@ char currentLetter = 'a';
 boolean keyboardreset = false;
 
 int [] keyboard = {0,0,0,0,0,0,0,0,0,0,0,0};
-
+boolean erased = false;
 
 
 
@@ -132,10 +132,6 @@ void draw()
     text("Back", 200 + 3*sizeOfInputArea/4, 200+sizeOfInputArea/3 + sizeOfInputArea/9);
     fill(255);
     text("" + currentLetter, 200+sizeOfInputArea/2, 200+sizeOfInputArea/3 - 50); //draw current letter
-    //fill(255, 0, 0);
-    //rect(200, 200+sizeOfInputArea/2, sizeOfInputArea/2, sizeOfInputArea/2); //draw left red button
-    //fill(0, 255, 0);
-    //rect(200+sizeOfInputArea/2, 200+sizeOfInputArea/2, sizeOfInputArea/2, sizeOfInputArea/2); //draw right green button
   }
 }
 
@@ -149,11 +145,23 @@ void refresharray(int t)
 {
   for (int i = 0; i < (keyboard).length;i++)
   {
-    if (i != t && i != 0)
+    if (i != t )
     {
         keyboard[i] = 0;
     }
   }
+}
+
+boolean isok()
+{
+  for (int i = 0; i < keyboard.length; i++)
+  {
+    if (keyboard[i] != 0)
+    {
+      return false;
+    }
+  }
+  return true;
 }
 
 
@@ -161,6 +169,7 @@ void mousePressed()
 {
   if (startTime !=0)
   {
+    println(keyboard);
       // jkl 
     if (didMouseClick(200, 200+2*sizeOfInputArea/3, sizeOfInputArea/3, sizeOfInputArea/6))
     {
@@ -187,24 +196,18 @@ void mousePressed()
     // abc 
     if (didMouseClick(200, 200+1.5*sizeOfInputArea/3, sizeOfInputArea/3, sizeOfInputArea/6))
     {
+      println("======================================");
       refresharray(0);
-      if (keyboard[0] == 0) {
-        currentLetter = 'a';
-      }
-      else if (keyboard[0]%3 == 0){
+      if (keyboard[0] == 0){currentLetter='a';}
+      else 
+      {
         currentTyped = currentTyped.substring(0, currentTyped.length()-1);
-        currentLetter = 'a';
+        if (keyboard[0]%3 == 0) {currentLetter = 'a';}
+        else if (keyboard[0]%3 == 1){currentLetter = 'b';}
+        else if (keyboard[0]%3 == 2){currentLetter = 'c';}
       }
-      else if (keyboard[0]%3 == 1){
-        currentTyped = currentTyped.substring(0, currentTyped.length()-1);
-        currentLetter = 'b';
-      }
-      else if (keyboard[0]%3 == 2){
-        currentTyped = currentTyped.substring(0, currentTyped.length()-1);
-        currentLetter = 'c';
-      }
-      keyboard[0]++;
-      currentTyped+=currentLetter;
+       keyboard[0]++;
+       currentTyped+=currentLetter;
     }
     
     // tuv
@@ -309,16 +312,25 @@ void mousePressed()
         currentLetter = '\'';
         currentTyped+=currentLetter;
     }
+    
     else if (didMouseClick(200, 200+sizeOfInputArea/3, sizeOfInputArea/2, sizeOfInputArea/6))
     {
+      println("SPACE=========================================================");
       refresharray(-1);
+      println("REFRESHARRAY");
+      println(keyboard);
       currentLetter = ' ';
       currentTyped+=currentLetter;
     }
+    
     // Back
     else if (didMouseClick(200+sizeOfInputArea/2, 200+sizeOfInputArea/3, sizeOfInputArea/2, sizeOfInputArea/6)
                && currentTyped.length()>0) //if `, treat that as a delete command
+    {
+        refresharray(-1);
         currentTyped = currentTyped.substring(0, currentTyped.length()-1);
+    }
+
     //You are allowed to have a next button outside the 2" area
     else if (didMouseClick(800, 00, 200, 200)) //check if click is in next button
     {
