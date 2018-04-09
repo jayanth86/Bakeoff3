@@ -173,13 +173,13 @@ void mousePressed()
   {
     if (first) 
     {
-      firstclick = System.currentTimeMillis();
+      firstclick = System.currentTimeMillis() % 100000;
       first = false;
     }
   
-    long secondclick = System.currentTimeMillis();
+    long secondclick = System.currentTimeMillis() % 100000;
     println("firstclick", firstclick, "secondclick", secondclick);
-    if (abs(secondclick - firstclick) > 2000) 
+    if (abs(secondclick - firstclick) > 500) 
     {
       refresharray(-1);
     }
