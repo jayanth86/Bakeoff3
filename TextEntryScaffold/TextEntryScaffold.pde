@@ -25,9 +25,8 @@ boolean keyboardreset = false;
 int [] keyboard = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 boolean erased = false;
 long secondclick;
-
-
-
+int bindex = -1;
+boolean drag = false;
 
 class Box 
 {
@@ -68,7 +67,7 @@ Box space = new Box(200, 200+3*sizeOfInputArea/4, 2*sizeOfInputArea/3, sizeOfInp
 Box del = new Box(200+2*sizeOfInputArea/3, 200+3*sizeOfInputArea/4, sizeOfInputArea/3, sizeOfInputArea/4, "del", 256, 0, 0, 9);
 Box apo = new Box(200+2*sizeOfInputArea/3, 200+2*sizeOfInputArea/4, sizeOfInputArea/3, sizeOfInputArea/4, "'", 256, 256, 256, 10);
 Box[] boxlist = new Box [] {abc,def,ghi,jkl,mno,pqrs,tuv,wxyz,space,del,apo};
-
+Box[] dragboxlist = new Box[4];
 
 void boxwithtext(float x, float y, float width, float height, String txt, int bgr, int bgg, int bgb) {
   fill(bgr, bgg, bgb);
@@ -136,26 +135,22 @@ void draw()
     //my draw code
     textAlign(CENTER);
     stroke(204, 102, 0);
-    
+   
     for (int i = 0; i < boxlist.length; i++)
     {
       Box b = boxlist[i];
       boxwithtext(b.x,b.y,b.width,b.height,b.txt,b.bgr,b.bgg,b.bgb);
+      if (drag)
+      {
+        dragbox(bindex);
+      }
     }
-    //boxwithtext(200, 200, sizeOfInputArea/3, sizeOfInputArea/4, "abc", 256, 256, 256);
-    //boxwithtext(200+sizeOfInputArea/3, 200, sizeOfInputArea/3, sizeOfInputArea/4, "def", 256, 256, 256);
-    //boxwithtext(200+2*sizeOfInputArea/3, 200, sizeOfInputArea/3, sizeOfInputArea/4, "ghi", 256, 256, 256);
-    //boxwithtext(200, 200+sizeOfInputArea/4, sizeOfInputArea/3, sizeOfInputArea/4, "jkl", 256, 256, 256);
-    //boxwithtext(200+sizeOfInputArea/3, 200+sizeOfInputArea/4, sizeOfInputArea/3, sizeOfInputArea/4, "mno", 256, 256, 256);
-    //boxwithtext(200+2*sizeOfInputArea/3, 200+sizeOfInputArea/4, sizeOfInputArea/3, sizeOfInputArea/4, "pqrs", 256, 256, 256);
-    //boxwithtext(200, 200+2*sizeOfInputArea/4, sizeOfInputArea/3, sizeOfInputArea/4, "tuv", 256, 256, 256);
-    //boxwithtext(200+sizeOfInputArea/3, 200+2*sizeOfInputArea/4, sizeOfInputArea/3, sizeOfInputArea/4, "wxyz", 256, 256, 256);
-    //boxwithtext(200+2*sizeOfInputArea/3, 200+2*sizeOfInputArea/4, sizeOfInputArea/3, sizeOfInputArea/4, "'", 256, 256, 256);
-    //boxwithtext(200, 200+3*sizeOfInputArea/4, 2*sizeOfInputArea/3, sizeOfInputArea/4, "space", 256, 256, 256);
-    //boxwithtext(200+2*sizeOfInputArea/3, 200+3*sizeOfInputArea/4, sizeOfInputArea/3, sizeOfInputArea/4, "del", 256, 0, 0);
-    //rect(200, 200, sizeOfInputArea/3, sizeOfInputArea/4);
+    
   }
 }
+
+
+
 
 boolean didMouseClick(float x, float y, float w, float h) //simple function to do hit testing
 {
@@ -188,12 +183,55 @@ boolean isok()
 
 
 
+void dragbox(int index)
+{
+  float x0 = 0;
+  float y0 = 0;
+  int numbox = 0;
+  String txt = "";
+  
+  Box b = boxlist[index];
+  txt = boxlist[index].txt;
+  if (index % 3 == 0 && index < 8)
+  {
+    x0 = boxlist[0].x;
+    y0 = boxlist[0].y;
+    numbox = 3;
+  }
+  else if (index % 3 == 1 && index < 8) 
+  {
+    x0 = boxlist[1].x;
+    y0 = boxlist[1].y;
+    numbox = 3;
+    if (index == 7)
+    {
+      numbox = 4;
+    }
+  }
+  else if (index % 3 == 2 && index < 8)
+  {
+    x0 = boxlist[2].x;
+    y0 = boxlist[2].y;
+    numbox = 3;
+    if (index == 5)
+    {
+      numbox = 4;
+    }
+  }
+  for (int i = 0; i < numbox; i++)
+  {
+    Box temp = new Box (x0, y0 +b.height * i,b.width,b.height,txt.charAt(i) + "", 200, 200,255,0);
+    dragboxlist[i] = temp;
+    boxwithtext(x0,y0+b.height * i,b.width,b.height,txt.charAt(i) + "", 200, 200,255);
+  }
+}
+
+
 long firstclick = 0;
 boolean first = true;
 void mousePressed()
 {
-  int bindex = -1;
-  if (startTime !=0)
+  if (startTime !=0 )
   {
     if (first) 
     {
@@ -207,8 +245,7 @@ void mousePressed()
       refresharray(-1);
     }
     firstclick = secondclick;
-    // jkl 
-    
+
     for (int i = 0; i < boxlist.length; i++)
     {
       Box b = boxlist[i];
@@ -219,60 +256,11 @@ void mousePressed()
     }
     
     refresharray(bindex);
-    if (0<= bindex && bindex <= 7 && bindex != 5 && bindex != 7)
+    if (0<= bindex && bindex <= 7 )
     {
-      if (keyboard[bindex] == 0)
-      {
-        currentLetter = boxlist[bindex].txt.charAt(0);
-      }
-      else if (keyboard[bindex]%3 == 0)
-      {
-        currentTyped = currentTyped.substring(0, currentTyped.length()-1);
-        currentLetter = boxlist[bindex].txt.charAt(0);
-      }
-      else if (keyboard[bindex]%3 == 1)
-      {
-        currentTyped = currentTyped.substring(0, currentTyped.length()-1);
-        currentLetter = boxlist[bindex].txt.charAt(1);
-      }
-      else if (keyboard[bindex]%3 == 2)
-      {
-        currentTyped = currentTyped.substring(0, currentTyped.length()-1);
-        currentLetter = boxlist[bindex].txt.charAt(2);
-      }
-      
-      keyboard[bindex]++;
-      currentTyped += currentLetter;
-    }
-    else if (bindex == 5 || bindex == 7)
-    {
-      if (keyboard[bindex] == 0)
-      {
-        currentLetter = boxlist[bindex].txt.charAt(0);
-      }
-      else if (keyboard[bindex]%4 == 0)
-      {
-        currentTyped = currentTyped.substring(0, currentTyped.length()-1);
-        currentLetter = boxlist[bindex].txt.charAt(0);
-      }
-      else if (keyboard[bindex]%4 == 1)
-      {
-        currentTyped = currentTyped.substring(0, currentTyped.length()-1);
-        currentLetter = boxlist[bindex].txt.charAt(1);
-      }
-      else if (keyboard[bindex]%4 == 2)
-      {
-        currentTyped = currentTyped.substring(0, currentTyped.length()-1);
-        currentLetter = boxlist[bindex].txt.charAt(2);
-      }      
-      else if (keyboard[bindex]%4 == 3)
-      {
-        currentTyped = currentTyped.substring(0, currentTyped.length()-1);
-        currentLetter = boxlist[bindex].txt.charAt(3);
-      }
-      keyboard[bindex]++;
-      currentTyped += currentLetter;
-    }
+      drag = true;
+
+    } 
     // space 
     else if (bindex == 8)
     {
@@ -293,12 +281,15 @@ void mousePressed()
       currentLetter = '\'';
       currentTyped+=currentLetter;
     }
+    
+    //dragbox(bindex);
     //You are allowed to have a next button outside the 2" area
     if (didMouseClick(800, 00, 200, 200)) //check if click is in next button
     {
       nextTrial(); //if so, advance to next trial
     }
     firstclick = secondclick;
+    
   }
 }
 
@@ -364,8 +355,34 @@ void nextTrial()
   lastTime = millis(); //record the time of when this trial ended
   currentTyped = ""; //clear what is currently typed preparing for next trial
   currentPhrase = phrases[currTrialNum]; // load the next phrase!
-  //currentPhrase = "abc"; // uncomment this to override the test phrase (useful for debugging)
+
 }
+
+void mouseReleased()
+{
+  int clickedboxindex = -1;
+  int numbox = 0;
+  if (bindex == 5 || bindex == 7) {numbox = 4;} 
+  else if (0 <= bindex || bindex <= 7) {numbox = 3;}
+  if (drag)
+  {
+    for (int i = 0; i <numbox ; i++)
+    {
+      Box clickbox = dragboxlist[i];
+      if (didMouseClick(clickbox.x, clickbox.y, clickbox.width, clickbox.height))
+      {
+        clickedboxindex = i;
+      }
+    }
+    if (clickedboxindex >= 0)
+    {
+      currentTyped+=dragboxlist[clickedboxindex].txt;
+    }
+    drag = !drag; 
+  }
+}
+
+
 
 //=========SHOULD NOT NEED TO TOUCH THIS METHOD AT ALL!==============
 int computeLevenshteinDistance(String phrase1, String phrase2) //this computers error between two strings
@@ -626,3 +643,114 @@ int computeLevenshteinDistance(String phrase1, String phrase2) //this computers 
     //  refresharray(-1);
     //  currentTyped = currentTyped.substring(0, currentTyped.length()-1);
     //}
+//    void mousePressed()
+//{
+//  int bindex = -1;
+//  if (startTime !=0)
+//  {
+//    if (first) 
+//    {
+//      firstclick = System.currentTimeMillis();
+//      first = false;
+//    }
+
+//    long secondclick = System.currentTimeMillis();
+//    if (secondclick - firstclick > 800) 
+//    {
+//      refresharray(-1);
+//    }
+//    firstclick = secondclick;
+//    // jkl 
+    
+//    for (int i = 0; i < boxlist.length; i++)
+//    {
+//      Box b = boxlist[i];
+//      if (didMouseClick(b.x, b.y, b.width, b.height))
+//      {
+//        bindex = b.index ;
+//      }
+//    }
+    
+//    refresharray(bindex);
+//    if (0<= bindex && bindex <= 7 && bindex != 5 && bindex != 7)
+//    {
+//      if (keyboard[bindex] == 0)
+//      {
+//        currentLetter = boxlist[bindex].txt.charAt(0);
+//      }
+//      else if (keyboard[bindex]%3 == 0)
+//      {
+//        currentTyped = currentTyped.substring(0, currentTyped.length()-1);
+//        currentLetter = boxlist[bindex].txt.charAt(0);
+//      }
+//      else if (keyboard[bindex]%3 == 1)
+//      {
+//        currentTyped = currentTyped.substring(0, currentTyped.length()-1);
+//        currentLetter = boxlist[bindex].txt.charAt(1);
+//      }
+//      else if (keyboard[bindex]%3 == 2)
+//      {
+//        currentTyped = currentTyped.substring(0, currentTyped.length()-1);
+//        currentLetter = boxlist[bindex].txt.charAt(2);
+//      }
+      
+//      keyboard[bindex]++;
+//      currentTyped += currentLetter;
+//    }
+//    else if (bindex == 5 || bindex == 7)
+//    {
+//      if (keyboard[bindex] == 0)
+//      {
+//        currentLetter = boxlist[bindex].txt.charAt(0);
+//      }
+//      else if (keyboard[bindex]%4 == 0)
+//      {
+//        currentTyped = currentTyped.substring(0, currentTyped.length()-1);
+//        currentLetter = boxlist[bindex].txt.charAt(0);
+//      }
+//      else if (keyboard[bindex]%4 == 1)
+//      {
+//        currentTyped = currentTyped.substring(0, currentTyped.length()-1);
+//        currentLetter = boxlist[bindex].txt.charAt(1);
+//      }
+//      else if (keyboard[bindex]%4 == 2)
+//      {
+//        currentTyped = currentTyped.substring(0, currentTyped.length()-1);
+//        currentLetter = boxlist[bindex].txt.charAt(2);
+//      }      
+//      else if (keyboard[bindex]%4 == 3)
+//      {
+//        currentTyped = currentTyped.substring(0, currentTyped.length()-1);
+//        currentLetter = boxlist[bindex].txt.charAt(3);
+//      }
+//      keyboard[bindex]++;
+//      currentTyped += currentLetter;
+//    }
+//    // space 
+//    else if (bindex == 8)
+//    {
+//       refresharray(-1);
+//       currentLetter = ' ';
+//       currentTyped += currentLetter;
+//    }
+//    // del
+//    else if (bindex == 9 && currentTyped.length()>0)
+//    {
+//      refresharray(-1);
+//      currentTyped = currentTyped.substring(0, currentTyped.length()-1);
+//    }
+//    // apo 
+//    else if (bindex == 10) 
+//    {
+//      refresharray(-1);
+//      currentLetter = '\'';
+//      currentTyped+=currentLetter;
+//    }
+//    //You are allowed to have a next button outside the 2" area
+//    if (didMouseClick(800, 00, 200, 200)) //check if click is in next button
+//    {
+//      nextTrial(); //if so, advance to next trial
+//    }
+//    firstclick = secondclick;
+//  }
+//}
