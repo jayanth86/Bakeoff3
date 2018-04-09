@@ -25,7 +25,13 @@ int [] keyboard = {0,0,0,0,0,0,0,0,0,0,0,0};
 boolean erased = false;
 long secondclick;
 
-
+void boxwithtext(float x, float y,float width, float height,String txt, int bgr, int bgg, int bgb)  {
+  fill(bgr,bgg,bgb);
+  rect(x,y,width,height);
+  fill(0);
+  text(txt,x+.5*width,y+.6*height);
+  return;
+}
 //You can modify anything in here. This is just a basic implementation.
 void setup()
 {
@@ -83,7 +89,20 @@ void draw()
 
     //my draw code
     textAlign(CENTER);
-   
+    stroke(204, 102, 0);
+    boxwithtext(200,200,sizeOfInputArea/3,sizeOfInputArea/4,"abc",256,256,256);
+    boxwithtext(200+sizeOfInputArea/3,200,sizeOfInputArea/3,sizeOfInputArea/4,"def",256,256,256);
+    boxwithtext(200+2*sizeOfInputArea/3,200,sizeOfInputArea/3,sizeOfInputArea/4,"ghi",256,256,256);
+    boxwithtext(200,200+sizeOfInputArea/4,sizeOfInputArea/3,sizeOfInputArea/4,"jkl",256,256,256);
+    boxwithtext(200+sizeOfInputArea/3,200+sizeOfInputArea/4,sizeOfInputArea/3,sizeOfInputArea/4,"mno",256,256,256);
+    boxwithtext(200+2*sizeOfInputArea/3,200+sizeOfInputArea/4,sizeOfInputArea/3,sizeOfInputArea/4,"pqrs",256,256,256);
+    boxwithtext(200,200+2*sizeOfInputArea/4,sizeOfInputArea/3,sizeOfInputArea/4,"tuv",256,256,256);
+    boxwithtext(200+sizeOfInputArea/3,200+2*sizeOfInputArea/4,sizeOfInputArea/3,sizeOfInputArea/4,"wxyz",256,256,256);
+    boxwithtext(200+2*sizeOfInputArea/3,200+2*sizeOfInputArea/4,sizeOfInputArea/3,sizeOfInputArea/4,"'",256,256,256);
+    boxwithtext(200,200+3*sizeOfInputArea/4,2*sizeOfInputArea/3,sizeOfInputArea/4,"space",256,256,256);
+    boxwithtext(200+2*sizeOfInputArea/3,200+3*sizeOfInputArea/4,sizeOfInputArea/3,sizeOfInputArea/4,"del",256,0,0);
+    //rect(200, 200, sizeOfInputArea/3, sizeOfInputArea/4);
+   /*
     stroke(204, 102, 0);
     rect(200, 200+1.5*sizeOfInputArea/3, sizeOfInputArea/3, sizeOfInputArea/6);
     fill(0);
@@ -132,6 +151,7 @@ void draw()
     text("Back", 200 + 3*sizeOfInputArea/4, 200+sizeOfInputArea/3 + sizeOfInputArea/9);
     fill(255);
     text("" + currentLetter, 200+sizeOfInputArea/2, 200+sizeOfInputArea/3 - 50); //draw current letter
+    */
   }
 }
 
