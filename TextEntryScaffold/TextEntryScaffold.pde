@@ -23,7 +23,7 @@ boolean keyboardreset = false;
 
 int [] keyboard = {0,0,0,0,0,0,0,0,0,0,0,0};
 boolean erased = false;
-
+long secondclick;
 
 
 //You can modify anything in here. This is just a basic implementation.
@@ -165,12 +165,26 @@ boolean isok()
 }
 
 
+long firstclick = 0;
+boolean first = true;
 void mousePressed()
 {
   if (startTime !=0)
   {
-    println(keyboard);
-      // jkl 
+    if (first) 
+    {
+      firstclick = System.currentTimeMillis();
+      first = false;
+    }
+  
+    long secondclick = System.currentTimeMillis();
+    println("firstclick", firstclick, "secondclick", secondclick);
+    if (abs(secondclick - firstclick) > 2000) 
+    {
+      refresharray(-1);
+    }
+    firstclick = secondclick;
+    // jkl 
     if (didMouseClick(200, 200+2*sizeOfInputArea/3, sizeOfInputArea/3, sizeOfInputArea/6))
     {
       refresharray(3);
@@ -315,10 +329,7 @@ void mousePressed()
     
     else if (didMouseClick(200, 200+sizeOfInputArea/3, sizeOfInputArea/2, sizeOfInputArea/6))
     {
-      println("SPACE=========================================================");
       refresharray(-1);
-      println("REFRESHARRAY");
-      println(keyboard);
       currentLetter = ' ';
       currentTyped+=currentLetter;
     }
@@ -336,7 +347,7 @@ void mousePressed()
     {
       nextTrial(); //if so, advance to next trial
     }
-    
+    firstclick = secondclick;
   }
 }
 
