@@ -192,30 +192,16 @@ void dragbox(int index)
   
   Box b = boxlist[index];
   txt = boxlist[index].txt;
-  if (index % 3 == 0 && index < 8)
+  if(index < 8)
   {
-    x0 = boxlist[0].x;
-    y0 = boxlist[0].y;
-    numbox = 3;
-  }
-  else if (index % 3 == 1 && index < 8) 
-  {
-    x0 = boxlist[1].x;
-    y0 = boxlist[1].y;
-    numbox = 3;
-    if (index == 7)
-    {
+    x0 = boxlist[index%3].x;
+    y0 = boxlist[index].y;
+    if(index < 3)  {
       numbox = 4;
-    }
-  }
-  else if (index % 3 == 2 && index < 8)
-  {
-    x0 = boxlist[2].x;
-    y0 = boxlist[2].y;
-    numbox = 3;
-    if (index == 5)
-    {
-      numbox = 4;
+    }  else if(index < 6)  {
+      numbox = 3;
+    } else  {
+      numbox = 2;
     }
   }
   for (int i = 0; i < numbox; i++)
