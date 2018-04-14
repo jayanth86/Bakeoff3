@@ -17,7 +17,7 @@ String currentTyped = ""; //what the user has typed so far
 final int DPIofYourDeviceScreen = 441; //you will need to look up the DPI or PPI of your device to make sure you get the right scale!!
 //http://en.wikipedia.org/wiki/List_of_displays_by_pixel_density
 final float sizeOfInputArea = DPIofYourDeviceScreen*1; //aka, 1.0 inches square!
-
+int numbox = 0;
 //Variables for my silly implementation. You can delete this:
 char currentLetter = 'a';
 boolean keyboardreset = false;
@@ -187,12 +187,11 @@ void dragbox(int index)
 {
   float x0 = 0;
   float y0 = 0;
-  int numbox = 0;
   String txt = "";
   
   Box b = boxlist[index];
   txt = boxlist[index].txt;
-  if(index < 8)
+  if((index < 8) || (index == 10))
   {
     x0 = boxlist[index%3].x;
     y0 = boxlist[index].y;
@@ -204,33 +203,25 @@ void dragbox(int index)
       numbox = 2;
     }
   }
+  // Drawing the dragging boxes
   for (int i = 0; i < numbox; i++)
   {
-    Box temp = new Box (x0, y0 +b.height * i,b.width,b.height,txt.charAt(i) + "", 200, 200,255,0);
+    Box temp;
+    if (bindex == 10) {temp = new Box (x0 + b.width, y0 +b.height * i,b.width,b.height,txt.charAt(i) + "", 200, 200,255,0);}
+    else{temp = new Box (x0, y0 +b.height * i,b.width,b.height,txt.charAt(i) + "", 200, 200,255,0);}
     dragboxlist[i] = temp;
-    boxwithtext(x0,y0+b.height * i,b.width,b.height,txt.charAt(i) + "", 200, 200,255);
+    if (bindex == 10) {boxwithtext(x0 + b.width,y0+b.height * i,b.width,b.height,txt.charAt(i) + "", 200, 200,255);}
+    else {boxwithtext(x0,y0+b.height * i,b.width,b.height,txt.charAt(i) + "", 200, 200,255);}
   }
 }
 
 
 long firstclick = 0;
-boolean first = true;
+
 void mousePressed()
 {
   if (startTime !=0 )
   {
-    if (first) 
-    {
-      firstclick = System.currentTimeMillis();
-      first = false;
-    }
-
-    long secondclick = System.currentTimeMillis();
-    if (secondclick - firstclick > 800) 
-    {
-      refresharray(-1);
-    }
-    firstclick = secondclick;
 
     for (int i = 0; i < boxlist.length; i++)
     {
@@ -241,11 +232,9 @@ void mousePressed()
       }
     }
     
-    refresharray(bindex);
-    if (0<= bindex && bindex <= 7 )
+    if (0<= bindex && bindex <= 7 || (bindex == 10) )
     {
       drag = true;
-
     } 
     // space 
     else if (bindex == 8)
@@ -260,15 +249,7 @@ void mousePressed()
       refresharray(-1);
       currentTyped = currentTyped.substring(0, currentTyped.length()-1);
     }
-    // apo 
-    else if (bindex == 10) 
-    {
-      refresharray(-1);
-      currentLetter = '\'';
-      currentTyped+=currentLetter;
-    }
-    
-    //dragbox(bindex);
+
     //You are allowed to have a next button outside the 2" area
     if (didMouseClick(800, 00, 200, 200)) //check if click is in next button
     {
@@ -347,19 +328,17 @@ void nextTrial()
 void mouseReleased()
 {
   int clickedboxindex = -1;
-  int numbox = 0;
-  if (bindex == 5 || bindex == 7) {numbox = 4;} 
-  else if (0 <= bindex || bindex <= 7) {numbox = 3;}
   if (drag)
   {
-    for (int i = 0; i <numbox ; i++)
+    for (int j = 0; j <numbox ; j++)
     {
-      Box clickbox = dragboxlist[i];
+      Box clickbox = dragboxlist[j];
       if (didMouseClick(clickbox.x, clickbox.y, clickbox.width, clickbox.height))
       {
-        clickedboxindex = i;
+        clickedboxindex = j;
       }
     }
+    // Typing
     if (clickedboxindex >= 0)
     {
       currentTyped+=dragboxlist[clickedboxindex].txt;
@@ -386,357 +365,3 @@ int computeLevenshteinDistance(String phrase1, String phrase2) //this computers 
 
   return distance[phrase1.length()][phrase2.length()];
 }
-
-
-
-// UNNECESSARY STUFF 
-/*
-    stroke(204, 102, 0);
- rect(200, 200+1.5*sizeOfInputArea/3, sizeOfInputArea/3, sizeOfInputArea/6);
- fill(0);
- text("abc", 200+sizeOfInputArea/6, 200+1.5*sizeOfInputArea/3 + sizeOfInputArea/9); //draw current letter
- fill(255);
- rect(200, 200+2*sizeOfInputArea/3, sizeOfInputArea/3, sizeOfInputArea/6);
- fill(0);
- text("jkl", 200+sizeOfInputArea/6, 200+2*sizeOfInputArea/3 + sizeOfInputArea/9); //draw current letter
- fill(255);
- rect(200, 200+2.5*sizeOfInputArea/3, sizeOfInputArea/3, sizeOfInputArea/6);
- fill(0);
- text("tuv", 200+sizeOfInputArea/6, 200+2.5*sizeOfInputArea/3 + sizeOfInputArea/9); //draw current letter
- fill(255);
- 
- rect(200+sizeOfInputArea/3, 200+1.5*sizeOfInputArea/3, sizeOfInputArea/3, sizeOfInputArea/6);
- fill(0);
- text("def", 200+3*sizeOfInputArea/6, 200+1.5*sizeOfInputArea/3 + sizeOfInputArea/9); //draw current letter
- fill(255);
- rect(200+sizeOfInputArea/3, 200+2*sizeOfInputArea/3, sizeOfInputArea/3, sizeOfInputArea/6);
- fill(0);
- text("mno", 200+3*sizeOfInputArea/6, 200+2*sizeOfInputArea/3 + sizeOfInputArea/9); //draw current letter
- fill(255);
- rect(200+sizeOfInputArea/3, 200+2.5*sizeOfInputArea/3, sizeOfInputArea/3, sizeOfInputArea/6);
- fill(0);
- text("wxyz", 200+3*sizeOfInputArea/6, 200+2.5*sizeOfInputArea/3 + sizeOfInputArea/9); //draw current letter
- fill(255);
- 
- rect(200+2*sizeOfInputArea/3, 200+1.5*sizeOfInputArea/3, sizeOfInputArea/3, sizeOfInputArea/6);
- fill(0);
- text("ghi", 200+5*sizeOfInputArea/6, 200+1.5*sizeOfInputArea/3 + sizeOfInputArea/9); //draw current letter
- fill(255);
- rect(200+2*sizeOfInputArea/3, 200+2*sizeOfInputArea/3, sizeOfInputArea/3, sizeOfInputArea/6);
- fill(0);
- text("pqrs", 200+5*sizeOfInputArea/6, 200+2*sizeOfInputArea/3 + sizeOfInputArea/9); //draw current letter
- fill(255);
- rect(200+2*sizeOfInputArea/3, 200+2.5*sizeOfInputArea/3, sizeOfInputArea/3, sizeOfInputArea/6);
- fill(0);
- text("'", 200+5*sizeOfInputArea/6, 200+2.5*sizeOfInputArea/3 + sizeOfInputArea/9); //draw current letter
- fill(255);
- rect(200, 200+sizeOfInputArea/3, sizeOfInputArea/2, sizeOfInputArea/6);
- fill(0);
- text("Space", 200 + sizeOfInputArea/4, 200+sizeOfInputArea/3 + sizeOfInputArea/9);
- fill(255, 0, 0);
- rect(200+sizeOfInputArea/2, 200+sizeOfInputArea/3, sizeOfInputArea/2, sizeOfInputArea/6);
- fill(0);
- text("Back", 200 + 3*sizeOfInputArea/4, 200+sizeOfInputArea/3 + sizeOfInputArea/9);
- fill(255);
- text("" + currentLetter, 200+sizeOfInputArea/2, 200+sizeOfInputArea/3 - 50); //draw current letter
- */
- 
- 
- 
-     
-    
-    //if (didMouseClick(200, 200+2*sizeOfInputArea/3, sizeOfInputArea/3, sizeOfInputArea/6))
-    //{
-    //  refresharray(3);
-    //  if (keyboard[3] == 0) {
-    //    currentLetter = 'j';
-    //  } else if (keyboard[3]% 3 == 0)
-    //  {
-    //    currentTyped = currentTyped.substring(0, currentTyped.length()-1);
-    //    currentLetter = 'j';
-    //  } else if (keyboard[3]%3 == 1) {
-    //    currentTyped = currentTyped.substring(0, currentTyped.length()-1);
-    //    currentLetter = 'k';
-    //  } else if (keyboard[3]%3 == 2) {
-    //    currentTyped = currentTyped.substring(0, currentTyped.length()-1);
-    //    currentLetter = 'l';
-    //  }
-    //  keyboard[3]++;
-    //  currentTyped+=currentLetter;
-    //}
-    //// abc 
-    //if (didMouseClick(200, 200+1.5*sizeOfInputArea/3, sizeOfInputArea/3, sizeOfInputArea/6))
-    //{
-    //  println("======================================");
-    //  refresharray(0);
-    //  if (keyboard[0] == 0) {
-    //    currentLetter='a';
-    //  } else 
-    //  {
-    //    currentTyped = currentTyped.substring(0, currentTyped.length()-1);
-    //    if (keyboard[0]%3 == 0) {
-    //      currentLetter = 'a';
-    //    } else if (keyboard[0]%3 == 1) {
-    //      currentLetter = 'b';
-    //    } else if (keyboard[0]%3 == 2) {
-    //      currentLetter = 'c';
-    //    }
-    //  }
-    //  keyboard[0]++;
-    //  currentTyped+=currentLetter;
-    //}
-
-    //// tuv
-    //else if (didMouseClick(200, 200+2.5*sizeOfInputArea/3, sizeOfInputArea/3, sizeOfInputArea/6))
-    //{
-    //  refresharray(6);
-    //  if (keyboard[6] == 0) {
-    //    currentLetter='t';
-    //  } else // if (keyboard[6] % 3 ==0 || keyboard[6] % 3 ==1 || keyboard[6] % 3 == 2)
-    //  {
-    //    currentTyped = currentTyped.substring(0, currentTyped.length()-1);
-    //    if (keyboard[6]%3 == 0) {
-    //      currentLetter = 't';
-    //    } else if (keyboard[6]%3 == 1) {
-    //      currentLetter = 'u';
-    //    } else if (keyboard[6]%3 == 2) {
-    //      currentLetter = 'v';
-    //    }
-    //  }
-    //  keyboard[6]++;
-    //  currentTyped+=currentLetter;
-    //}
-    //// def 
-    //else if (didMouseClick(200+sizeOfInputArea/3, 200+1.5*sizeOfInputArea/3, sizeOfInputArea/3, sizeOfInputArea/6))
-    //{
-    //  refresharray(1);
-    //  if (keyboard[1] == 0) {
-    //    currentLetter='d';
-    //  } else 
-    //  {
-    //    currentTyped = currentTyped.substring(0, currentTyped.length()-1);
-    //    if (keyboard[1]%3 == 0) {
-    //      currentLetter = 'd';
-    //    } else if (keyboard[1]%3 == 1) {
-    //      currentLetter = 'e';
-    //    } else if (keyboard[1]%3 == 2) {
-    //      currentLetter = 'f';
-    //    }
-    //  }
-    //  keyboard[1]++;
-    //  currentTyped+=currentLetter;
-    //}
-    //// mno 
-    //else if (didMouseClick(200+sizeOfInputArea/3, 200+2*sizeOfInputArea/3, sizeOfInputArea/3, sizeOfInputArea/6))
-    //{
-    //  refresharray(4);
-    //  if (keyboard[4] == 0) {
-    //    currentLetter='m';
-    //  } else 
-    //  {
-    //    currentTyped = currentTyped.substring(0, currentTyped.length()-1);
-    //    if (keyboard[4]%3 == 0) {
-    //      currentLetter = 'm';
-    //    } else if (keyboard[4]%3 == 1) {
-    //      currentLetter = 'n';
-    //    } else if (keyboard[4]%3 == 2) {
-    //      currentLetter = 'o';
-    //    }
-    //  }
-    //  keyboard[4]++;
-    //  currentTyped+=currentLetter;
-    //}
-    //// wxyz
-    //else if (didMouseClick(200+sizeOfInputArea/3, 200+2.5*sizeOfInputArea/3, sizeOfInputArea/3, sizeOfInputArea/6))
-    //{
-    //  refresharray(7);
-    //  if (keyboard[7] == 0) {
-    //    currentLetter = 'w';
-    //  } else
-    //  {
-
-    //    currentTyped = currentTyped.substring(0, currentTyped.length()-1);
-    //    if (keyboard[7] % 4 == 0) {
-    //      currentLetter = 'w';
-    //    } else if (keyboard[7] % 4 == 1) {
-    //      currentLetter = 'x';
-    //    } else if (keyboard[7] % 4 == 2) {
-    //      currentLetter = 'y';
-    //    } else if (keyboard[7] % 4 == 3) {
-    //      currentLetter = 'z';
-    //    }
-    //  }
-    //  keyboard[7]++;
-    //  currentTyped+=currentLetter;
-    //}
-    //// ghi
-    //else if (didMouseClick(200+2*sizeOfInputArea/3, 200+1.5*sizeOfInputArea/3, sizeOfInputArea/3, sizeOfInputArea/6))
-    //{
-    //  refresharray(2);
-    //  if (keyboard[2] == 0) {
-    //    currentLetter = 'g';
-    //  } else
-    //  {
-    //    currentTyped = currentTyped.substring(0, currentTyped.length()-1);
-    //    if (keyboard[2] % 3 == 0) {
-    //      currentLetter = 'g';
-    //    } else if (keyboard[2] % 3 == 1) {
-    //      currentLetter = 'h';
-    //    } else if (keyboard[2] % 3 == 2) {
-    //      currentLetter = 'i';
-    //    }
-    //  }
-    //  keyboard[2]++;
-    //  currentTyped+=currentLetter;
-    //}
-    //// pqrs
-    //else if (didMouseClick(200+2*sizeOfInputArea/3, 200+2*sizeOfInputArea/3, sizeOfInputArea/3, sizeOfInputArea/6))
-    //{
-    //  refresharray(5);
-    //  if (keyboard[5] == 0) {
-    //    currentLetter = 'p';
-    //  } else
-    //  {
-    //    currentTyped = currentTyped.substring(0, currentTyped.length()-1);
-    //    if (keyboard[5] % 4 == 0) {
-    //      currentLetter = 'p';
-    //    } else if (keyboard[5] % 4 == 1) {
-    //      currentLetter = 'q';
-    //    } else if (keyboard[5] % 4 == 2) {
-    //      currentLetter = 'r';
-    //    } else if (keyboard[5] % 4 == 3) {
-    //      currentLetter = 's';
-    //    }
-    //  }
-    //  keyboard[5]++;
-    //  currentTyped+=currentLetter;
-    //} else if (didMouseClick(200+2*sizeOfInputArea/3, 200+2.5*sizeOfInputArea/3, sizeOfInputArea/3, sizeOfInputArea/6))
-    //{
-    //  refresharray(-1);
-    //  currentLetter = '\'';
-    //  currentTyped+=currentLetter;
-    //} else if (didMouseClick(200, 200+sizeOfInputArea/3, sizeOfInputArea/2, sizeOfInputArea/6))
-    //{
-    //  refresharray(-1);
-    //  currentLetter = ' ';
-    //  currentTyped+=currentLetter;
-    //}
-
-    //// Back
-    //else if (didMouseClick(200+sizeOfInputArea/2, 200+sizeOfInputArea/3, sizeOfInputArea/2, sizeOfInputArea/6)
-    //  && currentTyped.length()>0) //if `, treat that as a delete command
-    //{
-    //  refresharray(-1);
-    //  currentTyped = currentTyped.substring(0, currentTyped.length()-1);
-    //}
-//    void mousePressed()
-//{
-//  int bindex = -1;
-//  if (startTime !=0)
-//  {
-//    if (first) 
-//    {
-//      firstclick = System.currentTimeMillis();
-//      first = false;
-//    }
-
-//    long secondclick = System.currentTimeMillis();
-//    if (secondclick - firstclick > 800) 
-//    {
-//      refresharray(-1);
-//    }
-//    firstclick = secondclick;
-//    // jkl 
-    
-//    for (int i = 0; i < boxlist.length; i++)
-//    {
-//      Box b = boxlist[i];
-//      if (didMouseClick(b.x, b.y, b.width, b.height))
-//      {
-//        bindex = b.index ;
-//      }
-//    }
-    
-//    refresharray(bindex);
-//    if (0<= bindex && bindex <= 7 && bindex != 5 && bindex != 7)
-//    {
-//      if (keyboard[bindex] == 0)
-//      {
-//        currentLetter = boxlist[bindex].txt.charAt(0);
-//      }
-//      else if (keyboard[bindex]%3 == 0)
-//      {
-//        currentTyped = currentTyped.substring(0, currentTyped.length()-1);
-//        currentLetter = boxlist[bindex].txt.charAt(0);
-//      }
-//      else if (keyboard[bindex]%3 == 1)
-//      {
-//        currentTyped = currentTyped.substring(0, currentTyped.length()-1);
-//        currentLetter = boxlist[bindex].txt.charAt(1);
-//      }
-//      else if (keyboard[bindex]%3 == 2)
-//      {
-//        currentTyped = currentTyped.substring(0, currentTyped.length()-1);
-//        currentLetter = boxlist[bindex].txt.charAt(2);
-//      }
-      
-//      keyboard[bindex]++;
-//      currentTyped += currentLetter;
-//    }
-//    else if (bindex == 5 || bindex == 7)
-//    {
-//      if (keyboard[bindex] == 0)
-//      {
-//        currentLetter = boxlist[bindex].txt.charAt(0);
-//      }
-//      else if (keyboard[bindex]%4 == 0)
-//      {
-//        currentTyped = currentTyped.substring(0, currentTyped.length()-1);
-//        currentLetter = boxlist[bindex].txt.charAt(0);
-//      }
-//      else if (keyboard[bindex]%4 == 1)
-//      {
-//        currentTyped = currentTyped.substring(0, currentTyped.length()-1);
-//        currentLetter = boxlist[bindex].txt.charAt(1);
-//      }
-//      else if (keyboard[bindex]%4 == 2)
-//      {
-//        currentTyped = currentTyped.substring(0, currentTyped.length()-1);
-//        currentLetter = boxlist[bindex].txt.charAt(2);
-//      }      
-//      else if (keyboard[bindex]%4 == 3)
-//      {
-//        currentTyped = currentTyped.substring(0, currentTyped.length()-1);
-//        currentLetter = boxlist[bindex].txt.charAt(3);
-//      }
-//      keyboard[bindex]++;
-//      currentTyped += currentLetter;
-//    }
-//    // space 
-//    else if (bindex == 8)
-//    {
-//       refresharray(-1);
-//       currentLetter = ' ';
-//       currentTyped += currentLetter;
-//    }
-//    // del
-//    else if (bindex == 9 && currentTyped.length()>0)
-//    {
-//      refresharray(-1);
-//      currentTyped = currentTyped.substring(0, currentTyped.length()-1);
-//    }
-//    // apo 
-//    else if (bindex == 10) 
-//    {
-//      refresharray(-1);
-//      currentLetter = '\'';
-//      currentTyped+=currentLetter;
-//    }
-//    //You are allowed to have a next button outside the 2" area
-//    if (didMouseClick(800, 00, 200, 200)) //check if click is in next button
-//    {
-//      nextTrial(); //if so, advance to next trial
-//    }
-//    firstclick = secondclick;
-//  }
-//}
