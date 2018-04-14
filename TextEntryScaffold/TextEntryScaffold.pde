@@ -55,18 +55,18 @@ class Box
   
 }
 
-Box abc = new Box(200, 200, sizeOfInputArea/3, sizeOfInputArea/4, "abc", 256, 256, 256,0);
-Box def = new Box(200+sizeOfInputArea/3, 200, sizeOfInputArea/3, sizeOfInputArea/4, "def", 256, 256, 256,1);
-Box ghi = new Box(200+2*sizeOfInputArea/3, 200, sizeOfInputArea/3, sizeOfInputArea/4, "ghi", 256, 256, 256,2);
-Box jkl = new Box(200, 200+sizeOfInputArea/4, sizeOfInputArea/3, sizeOfInputArea/4, "jkl", 256, 256, 256,3);
-Box mno = new Box(200+sizeOfInputArea/3, 200+sizeOfInputArea/4, sizeOfInputArea/3, sizeOfInputArea/4, "mno", 256, 256, 256,4);
-Box pqrs = new Box(200+2*sizeOfInputArea/3, 200+sizeOfInputArea/4, sizeOfInputArea/3, sizeOfInputArea/4, "pqrs", 256, 256, 256, 5);
-Box tuv = new Box(200, 200+2*sizeOfInputArea/4, sizeOfInputArea/3, sizeOfInputArea/4, "tuv", 256, 256, 256, 6);
-Box wxyz = new Box(200+sizeOfInputArea/3, 200+2*sizeOfInputArea/4, sizeOfInputArea/3, sizeOfInputArea/4, "wxyz", 256, 256, 256, 7);
+Box abcd = new Box(200, 200, sizeOfInputArea/3, sizeOfInputArea/4, "abcd", 256, 256, 256,0);
+Box efgh = new Box(200+sizeOfInputArea/3, 200, sizeOfInputArea/3, sizeOfInputArea/4, "efgh", 256, 256, 256,1);
+Box ijkl = new Box(200+2*sizeOfInputArea/3, 200, sizeOfInputArea/3, sizeOfInputArea/4, "ijkl", 256, 256, 256,2);
+Box mno = new Box(200, 200+sizeOfInputArea/4, sizeOfInputArea/3, sizeOfInputArea/4, "mno", 256, 256, 256,3);
+Box pqr = new Box(200+sizeOfInputArea/3, 200+sizeOfInputArea/4, sizeOfInputArea/3, sizeOfInputArea/4, "pqr", 256, 256, 256,4);
+Box stu = new Box(200+2*sizeOfInputArea/3, 200+sizeOfInputArea/4, sizeOfInputArea/3, sizeOfInputArea/4, "stu", 256, 256, 256, 5);
+Box vw = new Box(200, 200+2*sizeOfInputArea/4, sizeOfInputArea/3, sizeOfInputArea/4, "vw", 256, 256, 256, 6);
+Box xy = new Box(200+sizeOfInputArea/3, 200+2*sizeOfInputArea/4, sizeOfInputArea/3, sizeOfInputArea/4, "xy", 256, 256, 256, 7);
 Box space = new Box(200, 200+3*sizeOfInputArea/4, 2*sizeOfInputArea/3, sizeOfInputArea/4, "space", 256, 256, 256, 8);
 Box del = new Box(200+2*sizeOfInputArea/3, 200+3*sizeOfInputArea/4, sizeOfInputArea/3, sizeOfInputArea/4, "del", 256, 0, 0, 9);
-Box apo = new Box(200+2*sizeOfInputArea/3, 200+2*sizeOfInputArea/4, sizeOfInputArea/3, sizeOfInputArea/4, "'", 256, 256, 256, 10);
-Box[] boxlist = new Box [] {abc,def,ghi,jkl,mno,pqrs,tuv,wxyz,space,del,apo};
+Box zapo = new Box(200+2*sizeOfInputArea/3, 200+2*sizeOfInputArea/4, sizeOfInputArea/3, sizeOfInputArea/4, "z'", 256, 256, 256, 10);
+Box[] boxlist = new Box [] {abcd,efgh,ijkl,mno,pqr,stu,vw,xy,space,del,zapo};
 Box[] dragboxlist = new Box[4];
 
 void boxwithtext(float x, float y, float width, float height, String txt, int bgr, int bgg, int bgb) {
