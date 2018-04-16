@@ -1,7 +1,6 @@
 import java.util.Arrays;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
+import java.lang.Math;
 
 String[] phrases; //contains all of the phrases
 int totalTrialNum = 4; //the total number of phrases to be tested - set this low for testing. Might be ~10 for the real bakeoff!
@@ -17,65 +16,15 @@ String currentTyped = ""; //what the user has typed so far
 final int DPIofYourDeviceScreen = 441; //you will need to look up the DPI or PPI of your device to make sure you get the right scale!!
 //http://en.wikipedia.org/wiki/List_of_displays_by_pixel_density
 final float sizeOfInputArea = DPIofYourDeviceScreen*1; //aka, 1.0 inches square!
-int numbox = 0;
+float divSize = sizeOfInputArea/29; // width / #of chars + 2 margins
+
 //Variables for my silly implementation. You can delete this:
+int dragPos = 0;
+boolean mouseHold = false;
 char currentLetter = 'a';
-boolean keyboardreset = false;
 
-int [] keyboard = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-boolean erased = false;
-long secondclick;
-int bindex = -1;
-boolean drag = false;
-
-class Box 
-{
-  float x;
-  float y;
-  float width;
-  float height;
-  String txt;
-  int bgr;
-  int bgg;
-  int bgb;
-  int index;
-  char currentletter = 'a';
-  Box(float x1, float y1, float width1, float height1, String txt1, int bgr1, int bgg1, int bgb1, int index1)
-  {
-    x = x1;
-    y = y1;
-    width = width1;
-    height = height1;
-    txt = txt1;
-    bgr = bgr1;
-    bgg = bgg1;
-    bgb = bgb1;
-    index = index1; 
-  }
-  
-}
-
-Box abcd = new Box(200, 200, sizeOfInputArea/3, sizeOfInputArea/4, "abcd", 256, 256, 256,0);
-Box efgh = new Box(200+sizeOfInputArea/3, 200, sizeOfInputArea/3, sizeOfInputArea/4, "efgh", 256, 256, 256,1);
-Box ijkl = new Box(200+2*sizeOfInputArea/3, 200, sizeOfInputArea/3, sizeOfInputArea/4, "ijkl", 256, 256, 256,2);
-Box mno = new Box(200, 200+sizeOfInputArea/4, sizeOfInputArea/3, sizeOfInputArea/4, "mno", 256, 256, 256,3);
-Box pqr = new Box(200+sizeOfInputArea/3, 200+sizeOfInputArea/4, sizeOfInputArea/3, sizeOfInputArea/4, "pqr", 256, 256, 256,4);
-Box stu = new Box(200+2*sizeOfInputArea/3, 200+sizeOfInputArea/4, sizeOfInputArea/3, sizeOfInputArea/4, "stu", 256, 256, 256, 5);
-Box vw = new Box(200, 200+2*sizeOfInputArea/4, sizeOfInputArea/3, sizeOfInputArea/4, "vw", 256, 256, 256, 6);
-Box xy = new Box(200+sizeOfInputArea/3, 200+2*sizeOfInputArea/4, sizeOfInputArea/3, sizeOfInputArea/4, "xy", 256, 256, 256, 7);
-Box space = new Box(200, 200+3*sizeOfInputArea/4, 2*sizeOfInputArea/3, sizeOfInputArea/4, "space", 256, 256, 256, 8);
-Box del = new Box(200+2*sizeOfInputArea/3, 200+3*sizeOfInputArea/4, sizeOfInputArea/3, sizeOfInputArea/4, "del", 256, 0, 0, 9);
-Box zapo = new Box(200+2*sizeOfInputArea/3, 200+2*sizeOfInputArea/4, sizeOfInputArea/3, sizeOfInputArea/4, "z'", 256, 256, 256, 10);
-Box[] boxlist = new Box [] {abcd,efgh,ijkl,mno,pqr,stu,vw,xy,space,del,zapo};
-Box[] dragboxlist = new Box[4];
-
-void boxwithtext(float x, float y, float width, float height, String txt, int bgr, int bgg, int bgb) {
-  fill(bgr, bgg, bgb);
-  rect(x, y, width, height);
-  fill(0);
-  text(txt, x+.5*width, y+.6*height);
-  return;
-}
+char[] letters = {'q','q','a','z', 'w','s','x', 'e','d','c', 'r','f','v', 't','g','b', 'y','h','n', 'u','j','m', 'i','k','\'', 'o','l', 'p','p'};
+String[] letterStr = {"Q","A","Z", "W","S","X", "E","D","C", "R","F","V", "T","G","B", "Y","H","N", "U","J","M", "I","K", "'", "O", "L", " ","P"};
 
 //You can modify anything in here. This is just a basic implementation.
 void setup()
@@ -84,7 +33,7 @@ void setup()
   Collections.shuffle(Arrays.asList(phrases)); //randomize the order of the phrases
 
   orientation(PORTRAIT); //can also be LANDSCAPE -- sets orientation on android device
-  size(1000, 1000); //Sets the size of the app. You may want to modify this to your device. Many phones today are 1080 wide by 1920 tall.
+  size(900,900); //Sets the size of the app. You may want to modify this to your device. Many phones today are 1080 wide by 1920 tall.
   textFont(createFont("Arial", 24)); //set the font to arial 24
   noStroke(); //my code doesn't use any strokes.
 }
@@ -95,7 +44,7 @@ void draw()
   background(0); //clear background
 
   // image(watch,-200,200);
-  fill(100);
+  fill(69,68,69);
   rect(200, 200, sizeOfInputArea, sizeOfInputArea); //input area should be 2" by 2"
 
   if (finishTime!=0)
@@ -123,141 +72,147 @@ void draw()
     //you will need something like the next 10 lines in your code. Output does not have to be within the 2 inch area!
     textAlign(LEFT); //align the text left
     fill(128);
-    text("Phrase " + (currTrialNum+1) + " of " + totalTrialNum, 70, 50); //draw the trial count
+    text("Phrase " + (currTrialNum+1) + " of " + totalTrialNum, 100, 100); //draw the trial count
     fill(255);
-    text("Target:   " + currentPhrase, 70, 100); //draw the target string
-    text("Entered:  " + currentTyped +"|", 70, 140); //draw what the user has entered thus far 
+    text("Target:   ", 100, 140); //draw the target string
+    text(currentPhrase, 200, 140);
+    text("Entered:  ", 100, 180); //draw what the user has entered thus far 
+    text(currentTyped +"|", 200, 180);
     fill(255, 0, 0);
-    rect(800, 00, 200, 200); //draw next button
+    rect(200, 300+sizeOfInputArea, sizeOfInputArea, 200); //draw next button
     fill(255);
-    text("NEXT > ", 850, 100); //draw next label
-
-    //my draw code
+    textSize(50);
     textAlign(CENTER);
-    stroke(204, 102, 0);
-   
-    for (int i = 0; i < boxlist.length; i++)
-    {
-      Box b = boxlist[i];
-      boxwithtext(b.x,b.y,b.width,b.height,b.txt,b.bgr,b.bgg,b.bgb);
-      if (drag)
-      {
-        dragbox(bindex);
-      }
-    }
+    text("NEXT > ", 200+(sizeOfInputArea/2), 420+sizeOfInputArea); //draw next label
+    textSize(24);
+    textAlign(LEFT);
+
+    //draw code
     
-  }
-}
+    textAlign(CENTER);
 
-
-
-
-boolean didMouseClick(float x, float y, float w, float h) //simple function to do hit testing
-{
-  return (mouseX > x && mouseX<x+w && mouseY>y && mouseY<y+h); //check to see if it is in button bounds
-}
-
-
-void refresharray(int t)
-{
-  for (int i = 0; i < (keyboard).length; i++)
-  {
-    if (i != t )
+    fill(69,68,69);
+    stroke(245,242,220);
+    //draw space
+    rect(200, 200 + sizeOfInputArea * .75, sizeOfInputArea * .75, sizeOfInputArea * .25);
+    
+    //draw backspace
+    rect(200 + sizeOfInputArea * .75, 200 + sizeOfInputArea * .75, sizeOfInputArea * .25, sizeOfInputArea * .25);
+    
+    fill(245,242,220);
+    textSize(30);
+    
+    //space label
+    text("space", 200 + sizeOfInputArea * .375, 200 + sizeOfInputArea * .9);
+    
+    //backspace label
+    text("<", 200 + sizeOfInputArea * .875, 200 + sizeOfInputArea *.9);
+    textSize(22);
+    
+    //draw letters
+    for (int i = 0; i < 28; i++)
     {
-      keyboard[i] = 0;
+      noStroke();
+      fill(25*((i%3)+1),25*((i%3)+1),25*((i%3)+1));
+      rect(200 + divSize*.5 + (i)*divSize, 201, divSize, 195 + sizeOfInputArea * .3);
+      fill(245,242,220);
+      text(letterStr[i], 200 + divSize + (i)*divSize, 200 + sizeOfInputArea *.1 + (sizeOfInputArea * .15) * (.5 * (i % 3)));
+      
     }
-  }
-}
-
-boolean isok()
-{
-  for (int i = 0; i < keyboard.length; i++)
-  {
-    if (keyboard[i] != 0)
+    textSize(24);
+    
+    text(currentLetter,20,20);
+    
+    noFill();
+    stroke(255,87,41);
+    strokeWeight(2);
+    
+    //draw circles
+    if (mouseHold == true && (hitTest(200, 200, sizeOfInputArea, sizeOfInputArea * .75)))
     {
-      return false;
-    }
+      if (dragPos == 0)
+      {
+        ellipse(200 + 1 * divSize, 192 + sizeOfInputArea *.1 + (sizeOfInputArea * .15) * (.5 * ((0) % 3)), divSize*2, divSize*2);
+      }
+      else if (dragPos == 27 || dragPos == 29)
+      {
+        ellipse(200 + 28 * divSize, 192 + sizeOfInputArea *.1 + (sizeOfInputArea * .15) * (.5 * ((27) % 3)), divSize*2, divSize*2);
+      }
+      else
+      {
+        ellipse(200 + dragPos * divSize, 192 + sizeOfInputArea *.1 + (sizeOfInputArea * .15) * (.5 * ((dragPos-1) % 3)), divSize*2, divSize*2);
+      }  
+      line(mouseX, 200+sizeOfInputArea*.75, mouseX, 200);
+  }  
+    stroke(245,242,220);
   }
-  return true;
 }
 
-
-
-void dragbox(int index)
+boolean hitTest(float x, float y, float w, float h) //simple function to do hit testing
 {
-  float x0 = 0;
-  float y0 = 0;
-  String txt = "";
-  
-  Box b = boxlist[index];
-  txt = boxlist[index].txt;
-  if((index < 8) || (index == 10))
-  {
-    x0 = boxlist[index%3].x;
-    y0 = boxlist[index].y;
-    if(index < 3)  {
-      numbox = 4;
-    }  else if(index < 6)  {
-      numbox = 3;
-    } else  {
-      numbox = 2;
-    }
-  }
-  // Drawing the dragging boxes
-  for (int i = 0; i < numbox; i++)
-  {
-    Box temp;
-    if (bindex == 10) {temp = new Box (x0 + b.width, y0 +b.height * i,b.width,b.height,txt.charAt(i) + "", 200, 200,255,0);}
-    else{temp = new Box (x0, y0 +b.height * i,b.width,b.height,txt.charAt(i) + "", 200, 200,255,0);}
-    dragboxlist[i] = temp;
-    if (bindex == 10) {boxwithtext(x0 + b.width,y0+b.height * i,b.width,b.height,txt.charAt(i) + "", 200, 200,255);}
-    else {boxwithtext(x0,y0+b.height * i,b.width,b.height,txt.charAt(i) + "", 200, 200,255);}
-  }
+  return (mouseX > x && mouseX<(x)+(w) && mouseY>y && mouseY<(y)+(h)); //check to see if it is in button bounds
 }
 
-
-long firstclick = 0;
 
 void mousePressed()
 {
-  if (startTime !=0 )
+  mouseHold = true;
+  if (hitTest(200, 200, sizeOfInputArea, sizeOfInputArea * .75))
   {
+    dragPos = (int)Math.floor(((mouseX - 200)+divSize*.5) / divSize);
+    if (dragPos < 29)
+    {
+      currentLetter = letters[dragPos];    
+    }  
+}
+}
 
-    for (int i = 0; i < boxlist.length; i++)
+
+void mouseDragged()
+{
+       
+  //if mouse is in the drag input region, current letter is based on mouseX
+  if (hitTest(200, 200, sizeOfInputArea, sizeOfInputArea * .75))
+  {
+    dragPos = (int)Math.floor(((mouseX - 200)+divSize*.5) / divSize);
+    if (dragPos < 29)
     {
-      Box b = boxlist[i];
-      if (didMouseClick(b.x, b.y, b.width, b.height))
-      {
-        bindex = b.index ;
-      }
-    }
-    
-    if (0<= bindex && bindex <= 7 || (bindex == 10) )
-    {
-      drag = true;
+      currentLetter = letters[dragPos];    
     } 
-    // space 
-    else if (bindex == 8)
+  }
+}
+
+void mouseReleased()
+{
+  mouseHold = false;
+  
+  //space
+  if (hitTest(200, 200 + sizeOfInputArea * .75, sizeOfInputArea * .75, sizeOfInputArea * .25))
+  {
+    currentTyped += " ";
+  }
+  
+  //backspace
+  if (hitTest(200 + sizeOfInputArea * .75, 200 + sizeOfInputArea * .75, sizeOfInputArea * .25, sizeOfInputArea * .25))
+  {
+    if (currentTyped.length() > 0)
     {
-       refresharray(-1);
-       currentLetter = ' ';
-       currentTyped += currentLetter;
-    }
-    // del
-    else if (bindex == 9 && currentTyped.length()>0)
-    {
-      refresharray(-1);
       currentTyped = currentTyped.substring(0, currentTyped.length()-1);
     }
-
-    //You are allowed to have a next button outside the 2" area
-    if (didMouseClick(800, 00, 200, 200)) //check if click is in next button
-    {
-      nextTrial(); //if so, advance to next trial
-    }
-    firstclick = secondclick;
-    
   }
+  
+  //if in bounds, type current letter
+  if (hitTest(200, 200, sizeOfInputArea, sizeOfInputArea * .75))
+  {
+    currentTyped+=currentLetter;
+  }
+  
+  //check if click is in next button
+  if (hitTest(200, 300+sizeOfInputArea, sizeOfInputArea, 200)) 
+  {
+    nextTrial(); //if so, advance to next trial
+  }
+  
 }
 
 
@@ -318,33 +273,11 @@ void nextTrial()
   {
     currTrialNum++; //increment trial number
   }
-  refresharray(-1);
+
   lastTime = millis(); //record the time of when this trial ended
   currentTyped = ""; //clear what is currently typed preparing for next trial
   currentPhrase = phrases[currTrialNum]; // load the next phrase!
-
-}
-
-void mouseReleased()
-{
-  int clickedboxindex = -1;
-  if (drag)
-  {
-    for (int j = 0; j <numbox ; j++)
-    {
-      Box clickbox = dragboxlist[j];
-      if (didMouseClick(clickbox.x, clickbox.y, clickbox.width, clickbox.height))
-      {
-        clickedboxindex = j;
-      }
-    }
-    // Typing
-    if (clickedboxindex >= 0)
-    {
-      currentTyped+=dragboxlist[clickedboxindex].txt;
-    }
-    drag = !drag; 
-  }
+  //currentPhrase = "abc"; // uncomment this to override the test phrase (useful for debugging)
 }
 
 
