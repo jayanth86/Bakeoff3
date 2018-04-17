@@ -35,6 +35,8 @@ Map <String, Float> dict = new HashMap<String, Float>();
 String currentWord = "";
 Stack<String> words = new Stack<String>();
 String [] possible = new String [4];
+boolean firstclick = true;
+boolean firstclick2 = true;
 
 
 
@@ -192,35 +194,39 @@ boolean hitTest(float x, float y, float w, float h) //simple function to do hit 
 void mousePressed()
 {
   mouseHold = true;
-  String[] split = currentTyped.split("\\s+");
-  if (hitTest(200, 200 + sizeOfInputArea/2, sizeOfInputArea, widthtext *2)){
-    if (hitTest(200, 200 + sizeOfInputArea * 0.5, sizeOfInputArea * 0.5, widthtext)){
-      currentWord = possible[0];
-    }
-    else if (hitTest(200 + sizeOfInputArea * 0.5, 200 + sizeOfInputArea * 0.5, sizeOfInputArea * 0.5, widthtext)){
-      currentWord = possible[1];
-    }
-    else if (hitTest(200, 200 + sizeOfInputArea * 0.5 + widthtext, sizeOfInputArea * 0.5, widthtext)){
-      currentWord = possible[2];
-    }
-    else if (hitTest(200 + sizeOfInputArea * 0.5, 200 + sizeOfInputArea * 0.5 + widthtext, sizeOfInputArea * 0.5, widthtext)){
-      currentWord = possible[3];
-    }
-    int ctlength = split.length;
-    String x = "";
-    for (int i = 0; i < ctlength - 1; i++) 
-    {
-      x = x + split[i] + " ";
-    }
-    currentTyped = x + currentWord;
-  }
-  // Other Stuff 
-  else if (hitTest(200, 200, sizeOfInputArea, sizeOfInputArea * .75))
+  if (firstclick2) {firstclick2 = !firstclick2;}
+  else
   {
-    dragPos = (int)Math.floor(((mouseX - 200)+divSize*.5) / divSize);
-    if (dragPos < 29)
+    String[] split = currentTyped.split("\\s+");
+    if (hitTest(200, 200 + sizeOfInputArea/2, sizeOfInputArea, widthtext *2)){
+      if (hitTest(200, 200 + sizeOfInputArea * 0.5, sizeOfInputArea * 0.5, widthtext)){
+        currentWord = possible[0];
+      }
+      else if (hitTest(200 + sizeOfInputArea * 0.5, 200 + sizeOfInputArea * 0.5, sizeOfInputArea * 0.5, widthtext)){
+        currentWord = possible[1];
+      }
+      else if (hitTest(200, 200 + sizeOfInputArea * 0.5 + widthtext, sizeOfInputArea * 0.5, widthtext)){
+        currentWord = possible[2];
+      }
+      else if (hitTest(200 + sizeOfInputArea * 0.5, 200 + sizeOfInputArea * 0.5 + widthtext, sizeOfInputArea * 0.5, widthtext)){
+        currentWord = possible[3];
+      }
+      int ctlength = split.length;
+      String x = "";
+      for (int i = 0; i < ctlength - 1; i++) 
+      {
+        x = x + split[i] + " ";
+      }
+      currentTyped = x + currentWord;
+    }
+    // Other Stuff 
+    else if (hitTest(200, 200, sizeOfInputArea, sizeOfInputArea * .75))
     {
-      currentLetter = letters[dragPos];
+      dragPos = (int)Math.floor(((mouseX - 200)+divSize*.5) / divSize);
+      if (dragPos < 29)
+      {
+        currentLetter = letters[dragPos];
+      }
     }
   }
     
@@ -289,46 +295,48 @@ void mouseReleased()
 {
   mouseHold = false;
   //space
-  if (hitTest(200, 200 + sizeOfInputArea * .75, sizeOfInputArea * .75, sizeOfInputArea * .25))
-  {
-    currentTyped += " ";
-    currentWord = "";
-  }
-
-  //backspace
-  if (hitTest(200 + sizeOfInputArea * .75, 200 + sizeOfInputArea * .75, sizeOfInputArea * .25, sizeOfInputArea * .25))
-  {
-    if (currentTyped.length() > 0)
+  println(firstclick);
+  if (firstclick){firstclick = !firstclick;}
+  else{
+    if (hitTest(200, 200 + sizeOfInputArea * .75, sizeOfInputArea * .75, sizeOfInputArea * .25))
     {
-      currentTyped = currentTyped.substring(0, currentTyped.length()-1);
-      if (currentWord.length() != 0) {currentWord = currentWord.substring(0,currentWord.length()-1);}
+      currentTyped += " ";
+      currentWord = "";
     }
-    String[] split = currentTyped.split("\\s+");
-    //println(currentWord.length(),  currentTyped.length() , currentTyped.charAt(currentTyped.length() - 1));
-    if (currentWord.length() == 0 && currentTyped.length() > 0 && currentTyped.charAt(currentTyped.length() - 1) != ' ')
+  
+    //backspace
+    if (hitTest(200 + sizeOfInputArea * .75, 200 + sizeOfInputArea * .75, sizeOfInputArea * .25, sizeOfInputArea * .25))
     {
-      if (split.length == 0){currentWord = "";}
-      else {
-        currentWord = split[split.length - 1];
+      if (currentTyped.length() > 0)
+      {
+        currentTyped = currentTyped.substring(0, currentTyped.length()-1);
+        if (currentWord.length() != 0) {currentWord = currentWord.substring(0,currentWord.length()-1);}
+      }
+      String[] split = currentTyped.split("\\s+");
+      if (currentWord.length() == 0 && currentTyped.length() > 0 && currentTyped.charAt(currentTyped.length() - 1) != ' ')
+      {
+        if (split.length == 0){currentWord = "";}
+        else {
+          currentWord = split[split.length - 1];
+        }
       }
     }
-  }
-  println(currentWord);
-  
-  if (hitTest(200, 200 + sizeOfInputArea/2, sizeOfInputArea, widthtext *2)){
-  }
-  //if in bounds, type current letter
-  else if (hitTest(200, 200, sizeOfInputArea, sizeOfInputArea * .75))
-  {
-    currentTyped+=currentLetter;
-    currentWord += currentLetter;
-  }
-   
-  findmax(currentWord);
-  //check if click is in next button
-  if (hitTest(200, 300+sizeOfInputArea, sizeOfInputArea, 200)) 
-  {
-    nextTrial(); //if so, advance to next trial
+    
+    if (hitTest(200, 200 + sizeOfInputArea/2, sizeOfInputArea, widthtext *2)){
+    }
+    //if in bounds, type current letter
+    else if (hitTest(200, 200, sizeOfInputArea, sizeOfInputArea * .75))
+    {
+      currentTyped+=currentLetter;
+      currentWord += currentLetter;
+    }
+     
+    findmax(currentWord);
+    //check if click is in next button
+    if (hitTest(200, 300+sizeOfInputArea, sizeOfInputArea, 200)) 
+    {
+      nextTrial(); //if so, advance to next trial
+    }
   }
 }
 
