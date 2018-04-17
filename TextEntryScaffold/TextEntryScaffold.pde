@@ -3,9 +3,13 @@ import java.util.Collections;
 import java.lang.Math;
 import java.util.Map;
 import java.io.*;
+import java.util.LinkedHashMap;
+import java.util.Set;
 import java.util.Scanner;
 import java.util.Stack;
-
+import java.util.Iterator;
+import java.util.TreeMap;
+import java.util.*;
 
 String[] phrases; //contains all of the phrases
 int totalTrialNum = 4; //the total number of phrases to be tested - set this low for testing. Might be ~10 for the real bakeoff!
@@ -260,34 +264,51 @@ void printarray(String[] possible)
 
 String[] findmax(String currentWord)
 {
-  //println(currentWord);
-  Stack<String> stack = new Stack<String>();
-  float maxprob = 0f / 0f;
   boolean start = true;
-  for (Map.Entry<String, Float> entry : dict.entrySet()) {
+  TreeMap<Float, ArrayList<String>> tmap = new TreeMap <Float, ArrayList<String>>(Collections.reverseOrder());
+  for (Map.Entry<String, Float> entry : dict.entrySet()){
     String word = entry.getKey();
     Float prob = entry.getValue();
-    if (start && word.startsWith(currentWord)) 
-    {
-      stack.push(word);
+    if (start && word.startsWith(currentWord)){
+      //println(word,prob);
+        ArrayList<String> list = new ArrayList<String>();
+        list.add(word);
+        tmap.put(prob, list);
       start = !start;
-      maxprob = prob;
     }
-    else if (word.startsWith(currentWord) && (maxprob <= prob)){
-        stack.push(word);
-        prob = maxprob;
+    else if (word.startsWith(currentWord)){
+       if (tmap.containsKey(prob)){
+         ArrayList<String> list = tmap.get(prob);
+         list.add(word);
+       }
+       else {
+         ArrayList<String> list = new ArrayList<String>();
+          list.add(word);
+          tmap.put(prob, list);
+       }
     }
   }
+  
+  println("____________________");
+  Set set = tmap.entrySet();
+  Iterator iterator = set.iterator();
   int count = 0;
-  for (int i = 0; i < 4; i++) 
+  // Initialise
+  for (int i = 0; i < 4; i++)
   {
     possible[i] = "";
   }
-  while (!stack.empty() && count < 4)
-  {
-    possible[count] = stack.pop();
-    count++;
+  // from highest to lowest probability
+  while(iterator.hasNext() && count<4 ){
+    Map.Entry x = (Map.Entry)iterator.next();
+    ArrayList<String> list = (ArrayList <String>)x.getValue();
+    for (int i = 0; i < list.size() && count < 4; i++){
+      possible[count] = list.get(i);
+      count++;
+    }
   }
+  printarray(possible);
+  println("=====================");
   return possible;
 }
 
@@ -295,7 +316,6 @@ void mouseReleased()
 {
   mouseHold = false;
   //space
-  println(firstclick);
   if (firstclick){firstclick = !firstclick;}
   else{
     if (hitTest(200, 200 + sizeOfInputArea * .75, sizeOfInputArea * .75, sizeOfInputArea * .25))
@@ -424,3 +444,39 @@ int computeLevenshteinDistance(String phrase1, String phrase2) //this computers 
 
   return distance[phrase1.length()][phrase2.length()];
 }
+
+
+//String[] findmax(String currentWord)
+//{
+//  boolean start = true;
+//  TreeMap<Float,<String> tmap = new TreeMap <Float, String>();
+//  for (Map.Entry<String, Float> entry : dict.entrySet()){
+//    String word = entry.getKey();
+//    Float prob = entry.getValue();
+//    if (start && word.startsWith(currentWord)){
+//      println(word,prob);
+//      tmap.put(prob,word);
+//      start = !start;
+//    }
+//    else if (word.startsWith(currentWord)){tmap.put(prob,word);}
+//  }
+//  println("____________________");
+//  Set set = tmap.entrySet();
+//  Iterator iterator = set.iterator();
+//  int count = 0;
+//  // Initialise
+//  for (int i = 0; i < 4; i++)
+//  {
+//    possible[i] = "";
+//  }
+//  // from highest to lowest probability
+//  while(iterator.hasNext() && count<4 ){
+//    Map.Entry x = (Map.Entry)iterator.next();
+//    println(x.getValue(), x.getKey());
+//    possible[count] = (String)x.getValue();
+//    count++;
+//  }
+//  printarray(possible);
+//  println("=====================");
+//  return possible;
+//}
