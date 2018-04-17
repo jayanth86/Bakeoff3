@@ -25,7 +25,7 @@ float divSize = sizeOfInputArea/29; // width / #of chars + 2 margins
 
 //Variables for my silly implementation. You can delete this:
 int dragPos = 0;
-int widthtext = 40;
+int widthtext = 50;
 boolean mouseHold = false;
 char currentLetter = 'a';
 
@@ -176,11 +176,6 @@ void draw()
     }
     
     stroke(245, 242, 220);
-    //for(int i= 0; i< 4; i++)
-    //{
-    //  println(possible[i]);
-    //}
-
     boxwithtext(200,                         200 + sizeOfInputArea * 0.5, sizeOfInputArea * 0.5, widthtext, possible[0],100,100,150);
     boxwithtext(200 + sizeOfInputArea * 0.5, 200 + sizeOfInputArea * 0.5, sizeOfInputArea * 0.5, widthtext, possible[1],100,100,150);
     boxwithtext(200,                         200 + sizeOfInputArea * 0.5 + widthtext, sizeOfInputArea * 0.5, widthtext, possible[2],100,100,150);
@@ -234,8 +229,6 @@ void mousePressed()
 
 void mouseDragged()
 {
-
-  
   if (hitTest(200, 200 + sizeOfInputArea/2, sizeOfInputArea, widthtext *2)){
   }
   //if mouse is in the drag input region, current letter is based on mouseX
@@ -320,6 +313,7 @@ void mouseReleased()
       }
     }
   }
+  println(currentWord);
   
   if (hitTest(200, 200 + sizeOfInputArea/2, sizeOfInputArea, widthtext *2)){
   }
@@ -341,6 +335,7 @@ void mouseReleased()
 
 void nextTrial()
 {
+  currentWord = "";
   if (currTrialNum >= totalTrialNum) //check to see if experiment is done
     return; //if so, just return
 
