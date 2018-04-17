@@ -170,14 +170,27 @@ void draw()
     {
       if (dragPos == 0)
       {
-        ellipse(200 + 1 * divSize, 192 + sizeOfInputArea *.1 + (sizeOfInputArea * .15) * (.5 * ((0) % 3)), divSize*2, divSize*2);
+        fill(0);
+        ellipse(200 + 1 * divSize, 192 + sizeOfInputArea *.1 + (sizeOfInputArea * .15) * (.5 * ((0) % 3)), divSize*3, divSize*3);
+        fill(255);
+        textSize(40);
+        text(Character.toUpperCase(currentLetter),200 + 1 * divSize, 192 + sizeOfInputArea *.1 + (sizeOfInputArea * .15) * (.5 * ((0) % 3))+15);
       } else if (dragPos == 27 || dragPos == 29)
       {
-        ellipse(200 + 28 * divSize, 192 + sizeOfInputArea *.1 + (sizeOfInputArea * .15) * (.5 * ((27) % 3)), divSize*2, divSize*2);
+        fill(0);
+        ellipse(200 + 28 * divSize, 192 + sizeOfInputArea *.1 + (sizeOfInputArea * .15) * (.5 * ((27) % 3)), divSize*3, divSize*3);
+        fill(255);
+        textSize(40);
+        text(Character.toUpperCase(currentLetter),200 + 28 * divSize, 192 + sizeOfInputArea *.1 + (sizeOfInputArea * .15) * (.5 * ((27) % 3))+15);
       } else
       {
-        ellipse(200 + dragPos * divSize, 192 + sizeOfInputArea *.1 + (sizeOfInputArea * .15) * (.5 * ((dragPos-1) % 3)), divSize*2, divSize*2);
-      }  
+        fill(0);
+        ellipse(200 + dragPos * divSize, 192 + sizeOfInputArea *.1 + (sizeOfInputArea * .15) * (.5 * ((dragPos-1) % 3)), divSize*3, divSize*3);
+        fill(255);
+        textSize(40);
+        text(Character.toUpperCase(currentLetter),200 + dragPos * divSize, 192 + sizeOfInputArea *.1 + (sizeOfInputArea * .15) * (.5 * ((dragPos-1) % 3)) +15);
+      }
+      textFont(createFont("Arial", 24));
       line(mouseX, 200+sizeOfInputArea*.75, mouseX, 200);
     }
     
