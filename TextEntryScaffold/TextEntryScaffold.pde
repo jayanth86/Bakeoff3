@@ -288,8 +288,6 @@ String[] findmax(String currentWord)
        }
     }
   }
-  
-  println("____________________");
   Set set = tmap.entrySet();
   Iterator iterator = set.iterator();
   int count = 0;
@@ -307,8 +305,6 @@ String[] findmax(String currentWord)
       count++;
     }
   }
-  printarray(possible);
-  println("=====================");
   return possible;
 }
 
