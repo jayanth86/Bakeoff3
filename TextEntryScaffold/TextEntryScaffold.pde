@@ -229,17 +229,29 @@ void mousePressed()
   {
     String[] split = currentTyped.split("\\s+");
     if (hitTest(200, 200, sizeOfInputArea, widthtext *2)){
-      if (hitTest(200, 200, sizeOfInputArea * 0.5, widthtext)){
+      boolean x1 = true;
+      for (int i = 1; i< 4; i++) 
+      {
+        if (possible[i] != "") {x1 = false;break;} 
+      }
+      if (possible[0] != "" && !x1)
+      {
+        if (hitTest(200, 200, sizeOfInputArea * 0.5, widthtext)){
+          currentWord = possible[0];
+        }
+        else if (hitTest(200 + sizeOfInputArea * 0.5, 200, sizeOfInputArea * 0.5, widthtext)){
+          currentWord = possible[1];
+        }
+        else if (hitTest(200, 200 + widthtext, sizeOfInputArea * 0.5, widthtext)){
+          currentWord = possible[2];
+        }
+        else if (hitTest(200 + sizeOfInputArea * 0.5, 200 + widthtext, sizeOfInputArea * 0.5, widthtext)){
+          currentWord = possible[3];
+        }
+      }
+      else 
+      {
         currentWord = possible[0];
-      }
-      else if (hitTest(200 + sizeOfInputArea * 0.5, 200, sizeOfInputArea * 0.5, widthtext)){
-        currentWord = possible[1];
-      }
-      else if (hitTest(200, 200 + widthtext, sizeOfInputArea * 0.5, widthtext)){
-        currentWord = possible[2];
-      }
-      else if (hitTest(200 + sizeOfInputArea * 0.5, 200 + widthtext, sizeOfInputArea * 0.5, widthtext)){
-        currentWord = possible[3];
       }
       int ctlength = split.length;
       String x = "";
@@ -466,39 +478,3 @@ int computeLevenshteinDistance(String phrase1, String phrase2) //this computers 
 
   return distance[phrase1.length()][phrase2.length()];
 }
-
-
-//String[] findmax(String currentWord)
-//{
-//  boolean start = true;
-//  TreeMap<Float,<String> tmap = new TreeMap <Float, String>();
-//  for (Map.Entry<String, Float> entry : dict.entrySet()){
-//    String word = entry.getKey();
-//    Float prob = entry.getValue();
-//    if (start && word.startsWith(currentWord)){
-//      println(word,prob);
-//      tmap.put(prob,word);
-//      start = !start;
-//    }
-//    else if (word.startsWith(currentWord)){tmap.put(prob,word);}
-//  }
-//  println("____________________");
-//  Set set = tmap.entrySet();
-//  Iterator iterator = set.iterator();
-//  int count = 0;
-//  // Initialise
-//  for (int i = 0; i < 4; i++)
-//  {
-//    possible[i] = "";
-//  }
-//  // from highest to lowest probability
-//  while(iterator.hasNext() && count<4 ){
-//    Map.Entry x = (Map.Entry)iterator.next();
-//    println(x.getValue(), x.getKey());
-//    possible[count] = (String)x.getValue();
-//    count++;
-//  }
-//  printarray(possible);
-//  println("=====================");
-//  return possible;
-//}
