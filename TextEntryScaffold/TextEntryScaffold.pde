@@ -32,6 +32,11 @@ int dragPos = 0;
 int widthtext = 50;
 boolean mouseHold = false;
 char currentLetter = 'a';
+float letterHeight = 0.31;
+
+//simulated mouse location
+float simX = 0;
+float simHold = 0;
 
 char[] letters = {'q', 'q', 'a', 'z', 'w', 's', 'x', 'e', 'd', 'c', 'r', 'f', 'v', 't', 'g', 'b', 'y', 'h', 'n', 'u', 'j', 'm', 'i', 'k', '\'', 'o', 'l', 'p', 'p'};
 String[] letterStr = {"Q", "A", "Z", "W", "S", "X", "E", "D", "C", "R", "F", "V", "T", "G", "B", "Y", "H", "N", "U", "J", "M", "I", "K", "'", "O", "L", " ", "P"};
@@ -47,8 +52,8 @@ boolean firstclick2 = true;
 void boxwithtext(float x, float y,float width, float height, String txt, int bgr, int bgg, int bgb)  {
   fill(bgr,bgg,bgb);
   rect(x,y,width,height);
-  fill(0);  
-  if (txt != null){text(txt,x+.5*width,y+.6*height);}
+  fill(245, 242, 220);  
+  if (txt != null){text(txt,x+.5*width,y+.65*height);}
 }
 
 //You can modify anything in here. This is just a basic implementation.
@@ -58,7 +63,7 @@ void setup()
   Collections.shuffle(Arrays.asList(phrases)); //randomize the order of the phrases
 
   orientation(PORTRAIT); //can also be LANDSCAPE -- sets orientation on android device
-  size(900, 900); //Sets the size of the app. You may wantcreate to modify this to your device. May phones today are 1080 wide by 1920 tall.
+  size(900, 900, P2D); //Sets the size of the app. You may wantcreate to modify this to your device. May phones today are 1080 wide by 1920 tall.
   textFont(createFont("Arial", 24)); //set the font to arial 24
   noStroke(); //my code doesn't use any strokes
   BufferedReader reader =  createReader("hi.txt");  
@@ -118,11 +123,11 @@ void draw()
     text("Entered:  ", 100, 180); //draw what the user has entered thus far 
     text(currentTyped +"|", 200, 180);
     fill(255, 0, 0);
-    rect(200, 300+sizeOfInputArea, sizeOfInputArea, 200); //draw next button
+    rect(200, 315+sizeOfInputArea, sizeOfInputArea, 200); //draw next button
     fill(255);
     textSize(50);
     textAlign(CENTER);
-    text("NEXT > ", 200+(sizeOfInputArea/2), 420+sizeOfInputArea); //draw next label
+    text("NEXT > ", 200+(sizeOfInputArea/2), 435+sizeOfInputArea); //draw next label
     textSize(24);
     textAlign(LEFT);
 
@@ -146,59 +151,65 @@ void draw()
 
     //backspace label
     text("<", 200 + sizeOfInputArea * .875, 200 + sizeOfInputArea *.9);
-    textSize(22);
 
-    //draw letters
+    noFill();
+    stroke(255, 87, 41);
+    strokeWeight(2);
+    
+    //draw boxes
     for (int i = 0; i < 28; i++)
     {
       noStroke();
       fill(25*((i%3)+1), 25*((i%3)+1), 25*((i%3)+1));
       rect(200 + divSize*.5 + (i)*divSize, 201, divSize, 195 + sizeOfInputArea * .3);
-      fill(245, 242, 220);
-      text(letterStr[i], 200 + divSize + (i)*divSize, 200 + sizeOfInputArea *.1 + (sizeOfInputArea * .15) * (.5 * (i % 3)));
     }
-    textSize(24);
-
-    text(currentLetter, 20, 20);
-
+    
+    textSize(22);
+    fill(245, 242, 220);
+    //draw letters
+    for (int i = 0; i < 28; i++)
+    {
+      
+      text(letterStr[i], 200 + divSize + (i)*divSize, 200 + sizeOfInputArea * letterHeight + (sizeOfInputArea * .15) * (.5 * (i % 3)));
+    }
+    
     noFill();
     stroke(255, 87, 41);
     strokeWeight(2);
-
     //draw circles
     if (mouseHold == true && (hitTest(200, 200, sizeOfInputArea, sizeOfInputArea * .75)))
     {
       if (dragPos == 0)
       {
         fill(0);
-        ellipse(200 + 1 * divSize, 192 + sizeOfInputArea *.1 + (sizeOfInputArea * .15) * (.5 * ((0) % 3)), divSize*3, divSize*3);
+        ellipse(200 + 1 * divSize, 192 + sizeOfInputArea * letterHeight + (sizeOfInputArea * .15) * (.5 * ((0) % 3)), divSize*3, divSize*3);
         fill(255);
         textSize(40);
-        text(Character.toUpperCase(currentLetter),200 + 1 * divSize, 192 + sizeOfInputArea *.1 + (sizeOfInputArea * .15) * (.5 * ((0) % 3))+15);
+        text(Character.toUpperCase(currentLetter),200 + 1 * divSize, 192 + sizeOfInputArea * letterHeight + (sizeOfInputArea * .15) * (.5 * ((0) % 3))+15);
       } else if (dragPos == 27 || dragPos == 29)
       {
         fill(0);
-        ellipse(200 + 28 * divSize, 192 + sizeOfInputArea *.1 + (sizeOfInputArea * .15) * (.5 * ((27) % 3)), divSize*3, divSize*3);
+        ellipse(200 + 28 * divSize, 192 + sizeOfInputArea * letterHeight + (sizeOfInputArea * .15) * (.5 * ((27) % 3)), divSize*3, divSize*3);
         fill(255);
         textSize(40);
-        text(Character.toUpperCase(currentLetter),200 + 28 * divSize, 192 + sizeOfInputArea *.1 + (sizeOfInputArea * .15) * (.5 * ((27) % 3))+15);
+        text(Character.toUpperCase(currentLetter),200 + 28 * divSize, 192 + sizeOfInputArea * letterHeight + (sizeOfInputArea * .15) * (.5 * ((27) % 3))+15);
       } else
       {
         fill(0);
-        ellipse(200 + dragPos * divSize, 192 + sizeOfInputArea *.1 + (sizeOfInputArea * .15) * (.5 * ((dragPos-1) % 3)), divSize*3, divSize*3);
+        ellipse(200 + dragPos * divSize, 192 + sizeOfInputArea * letterHeight + (sizeOfInputArea * .15) * (.5 * ((dragPos-1) % 3)), divSize*3, divSize*3);
         fill(255);
         textSize(40);
-        text(Character.toUpperCase(currentLetter),200 + dragPos * divSize, 192 + sizeOfInputArea *.1 + (sizeOfInputArea * .15) * (.5 * ((dragPos-1) % 3)) +15);
+        text(Character.toUpperCase(currentLetter),200 + dragPos * divSize, 192 + sizeOfInputArea * letterHeight + (sizeOfInputArea * .15) * (.5 * ((dragPos-1) % 3)) +15);
       }
-      textFont(createFont("Arial", 24));
-      line(mouseX, 200+sizeOfInputArea*.75, mouseX, 200);
+
+      line(simX, 200+sizeOfInputArea*.75, simX, 200);
     }
-    
+    textSize(24);
     stroke(245, 242, 220);
-    boxwithtext(200,                         200 + sizeOfInputArea * 0.5, sizeOfInputArea * 0.5, widthtext, possible[0],100,100,150);
-    boxwithtext(200 + sizeOfInputArea * 0.5, 200 + sizeOfInputArea * 0.5, sizeOfInputArea * 0.5, widthtext, possible[1],100,100,150);
-    boxwithtext(200,                         200 + sizeOfInputArea * 0.5 + widthtext, sizeOfInputArea * 0.5, widthtext, possible[2],100,100,150);
-    boxwithtext(200 + sizeOfInputArea * 0.5, 200 + sizeOfInputArea * 0.5 + widthtext, sizeOfInputArea * 0.5, widthtext, possible[3],100,100,150);
+    boxwithtext(200,                         200,             sizeOfInputArea * 0.5, widthtext, possible[0],100,100,150);
+    boxwithtext(200 + sizeOfInputArea * 0.5, 200,             sizeOfInputArea * 0.5, widthtext, possible[1],100,100,150);
+    boxwithtext(200,                         200 + widthtext, sizeOfInputArea * 0.5, widthtext, possible[2],100,100,150);
+    boxwithtext(200 + sizeOfInputArea * 0.5, 200 + widthtext, sizeOfInputArea * 0.5, widthtext, possible[3],100,100,150);
   }
 }
 
@@ -211,21 +222,23 @@ boolean hitTest(float x, float y, float w, float h) //simple function to do hit 
 void mousePressed()
 {
   mouseHold = true;
+  simHold = mouseX;
+  simX = mouseX;
   if (firstclick2) {firstclick2 = !firstclick2;}
   else
   {
     String[] split = currentTyped.split("\\s+");
-    if (hitTest(200, 200 + sizeOfInputArea/2, sizeOfInputArea, widthtext *2)){
-      if (hitTest(200, 200 + sizeOfInputArea * 0.5, sizeOfInputArea * 0.5, widthtext)){
+    if (hitTest(200, 200, sizeOfInputArea, widthtext *2)){
+      if (hitTest(200, 200, sizeOfInputArea * 0.5, widthtext)){
         currentWord = possible[0];
       }
-      else if (hitTest(200 + sizeOfInputArea * 0.5, 200 + sizeOfInputArea * 0.5, sizeOfInputArea * 0.5, widthtext)){
+      else if (hitTest(200 + sizeOfInputArea * 0.5, 200, sizeOfInputArea * 0.5, widthtext)){
         currentWord = possible[1];
       }
-      else if (hitTest(200, 200 + sizeOfInputArea * 0.5 + widthtext, sizeOfInputArea * 0.5, widthtext)){
+      else if (hitTest(200, 200 + widthtext, sizeOfInputArea * 0.5, widthtext)){
         currentWord = possible[2];
       }
-      else if (hitTest(200 + sizeOfInputArea * 0.5, 200 + sizeOfInputArea * 0.5 + widthtext, sizeOfInputArea * 0.5, widthtext)){
+      else if (hitTest(200 + sizeOfInputArea * 0.5, 200 + widthtext, sizeOfInputArea * 0.5, widthtext)){
         currentWord = possible[3];
       }
       int ctlength = split.length;
@@ -239,7 +252,7 @@ void mousePressed()
     // Other Stuff 
     else if (hitTest(200, 200, sizeOfInputArea, sizeOfInputArea * .75))
     {
-      dragPos = (int)Math.floor(((mouseX - 200)+divSize*.5) / divSize);
+      dragPos = (int)Math.floor(((simX - 200)+divSize*.5) / divSize);
       if (dragPos < 29)
       {
         currentLetter = letters[dragPos];
@@ -252,18 +265,18 @@ void mousePressed()
 
 void mouseDragged()
 {
-  if (hitTest(200, 200 + sizeOfInputArea/2, sizeOfInputArea, widthtext *2)){
+  simX = simHold + ((mouseX - simHold)*.775) ;
+  if (hitTest(200, 200, sizeOfInputArea, widthtext *2)){
   }
   //if mouse is in the drag input region, current letter is based on mouseX
-  else if (hitTest(200, 200, sizeOfInputArea, sizeOfInputArea * .75))
+  else if (hitTest(200, 200 + widthtext*2 , sizeOfInputArea, sizeOfInputArea *.75 - widthtext*2))
   {
-    dragPos = (int)Math.floor(((mouseX - 200)+divSize*.5) / divSize);
+    dragPos = (int)Math.floor(((simX - 200)+divSize*.5) / divSize);
     if (dragPos < 29)
     {
       currentLetter = letters[dragPos];
     }
   }
-  
 }
 
 void printarray(String[] possible)
@@ -351,10 +364,10 @@ void mouseReleased()
       }
     }
     
-    if (hitTest(200, 200 + sizeOfInputArea/2, sizeOfInputArea, widthtext *2)){
+    if (hitTest(200, 200, sizeOfInputArea, widthtext *2)){
     }
     //if in bounds, type current letter
-    else if (hitTest(200, 200, sizeOfInputArea, sizeOfInputArea * .75))
+    else if (hitTest(200, 200 + widthtext*2 , sizeOfInputArea, sizeOfInputArea *.75 - widthtext*2))
     {
       currentTyped+=currentLetter;
       currentWord += currentLetter;
@@ -362,7 +375,7 @@ void mouseReleased()
      
     findmax(currentWord);
     //check if click is in next button
-    if (hitTest(200, 300+sizeOfInputArea, sizeOfInputArea, 200)) 
+    if (hitTest(200, 315+sizeOfInputArea, sizeOfInputArea, 200)) 
     {
       nextTrial(); //if so, advance to next trial
     }
