@@ -1,0 +1,4 @@
+Word Prediction:
+The word prediction was basically done by returning the four words with the highest probability of word given characters typed by user. This was primarily calculated by counting the number of words in the corpus and doing a La Place Smoothing. No N-gram techniques were used.
+
+
