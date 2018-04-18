@@ -34,10 +34,6 @@ boolean mouseHold = false;
 char currentLetter = 'a';
 float letterHeight = 0.31;
 
-//simulated mouse location
-float simX = 0;
-float simHold = 0;
-
 char[] letters = {'q', 'q', 'a', 'z', 'w', 's', 'x', 'e', 'd', 'c', 'r', 'f', 'v', 't', 'g', 'b', 'y', 'h', 'n', 'u', 'j', 'm', 'i', 'k', '\'', 'o', 'l', 'p', 'p'};
 String[] letterStr = {"Q", "A", "Z", "W", "S", "X", "E", "D", "C", "R", "F", "V", "T", "G", "B", "Y", "H", "N", "U", "J", "M", "I", "K", "'", "O", "L", " ", "P"};
 Map <String, Float> dict = new HashMap<String, Float>();
@@ -202,7 +198,7 @@ void draw()
         text(Character.toUpperCase(currentLetter),200 + dragPos * divSize, 192 + sizeOfInputArea * letterHeight + (sizeOfInputArea * .15) * (.5 * ((dragPos-1) % 3)) +15);
       }
 
-      line(simX, 200+sizeOfInputArea*.75, simX, 200);
+      line(mouseX, 200+sizeOfInputArea*.75, mouseX, 200);
     }
     textSize(24);
     stroke(245, 242, 220);
@@ -222,8 +218,6 @@ boolean hitTest(float x, float y, float w, float h) //simple function to do hit 
 void mousePressed()
 {
   mouseHold = true;
-  simHold = mouseX;
-  simX = mouseX;
   if (firstclick2) {firstclick2 = !firstclick2;}
   else
   {
@@ -264,7 +258,7 @@ void mousePressed()
     // Other Stuff 
     else if (hitTest(200, 200, sizeOfInputArea, sizeOfInputArea * .75))
     {
-      dragPos = (int)Math.floor(((simX - 200)+divSize*.5) / divSize);
+      dragPos = (int)Math.floor(((mouseX - 200)+divSize*.5) / divSize);
       if (dragPos < 29)
       {
         currentLetter = letters[dragPos];
@@ -277,13 +271,13 @@ void mousePressed()
 
 void mouseDragged()
 {
-  simX = simHold + ((mouseX - simHold)*.775) ;
+
   if (hitTest(200, 200, sizeOfInputArea, widthtext *2)){
   }
   //if mouse is in the drag input region, current letter is based on mouseX
   else if (hitTest(200, 200 + widthtext*2 , sizeOfInputArea, sizeOfInputArea *.75 - widthtext*2))
   {
-    dragPos = (int)Math.floor(((simX - 200)+divSize*.5) / divSize);
+    dragPos = (int)Math.floor(((mouseX - 200)+divSize*.5) / divSize);
     if (dragPos < 29)
     {
       currentLetter = letters[dragPos];
